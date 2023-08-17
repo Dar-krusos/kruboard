@@ -10,9 +10,9 @@ bool startup_effect_runner(effect_params_t* params, dx_dy_i_f effect_func) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
 
     uint8_t time = scale16by8(g_rgb_timer, rgb_matrix_config.speed / 2);
-    
+
     if (timer_elapsed32(timer) < 1200) {
-        return led_max < DRIVER_LED_TOTAL;
+        return led_max < RGB_MATRIX_LED_COUNT;
     } else if (timer_elapsed32(timer) < 2150) {
         for (uint8_t i = 0; i < 12; i++) {
             RGB_MATRIX_TEST_LED_FLAGS();
@@ -21,7 +21,7 @@ bool startup_effect_runner(effect_params_t* params, dx_dy_i_f effect_func) {
             RGB     rgb = rgb_matrix_hsv_to_rgb(effect_func(rgb_matrix_config.hsv, dx, dy, i, time, 1200, 0));
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
-        for (uint8_t i = DRIVER_LED_TOTAL-12; i < DRIVER_LED_TOTAL; i++) {
+        for (uint8_t i = RGB_MATRIX_LED_COUNT-12; i < RGB_MATRIX_LED_COUNT; i++) {
             RGB_MATRIX_TEST_LED_FLAGS();
             int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
             int16_t dy  = g_led_config.point[i].y - k_rgb_matrix_center.y;
@@ -31,9 +31,9 @@ bool startup_effect_runner(effect_params_t* params, dx_dy_i_f effect_func) {
     } else if (timer_elapsed32(timer) < 3100) {
         if (timer_elapsed32(timer) < 2400) {
             rgb_matrix_set_color(11, 0, 0, 0);
-            rgb_matrix_set_color(DRIVER_LED_TOTAL-11, 0, 0, 0);
+            rgb_matrix_set_color(RGB_MATRIX_LED_COUNT-11, 0, 0, 0);
         }
-        
+
         for (uint8_t i = 12; i < 24; i++) {
             RGB_MATRIX_TEST_LED_FLAGS();
             int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
@@ -41,7 +41,7 @@ bool startup_effect_runner(effect_params_t* params, dx_dy_i_f effect_func) {
             RGB     rgb = rgb_matrix_hsv_to_rgb(effect_func(rgb_matrix_config.hsv, dx, dy, i, time, 2150, 1));
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
-        for (uint8_t i = DRIVER_LED_TOTAL-24; i < DRIVER_LED_TOTAL-12; i++) {
+        for (uint8_t i = RGB_MATRIX_LED_COUNT-24; i < RGB_MATRIX_LED_COUNT-12; i++) {
             RGB_MATRIX_TEST_LED_FLAGS();
             int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
             int16_t dy  = g_led_config.point[i].y - k_rgb_matrix_center.y;
@@ -66,14 +66,14 @@ bool startup_effect_runner(effect_params_t* params, dx_dy_i_f effect_func) {
             RGB     rgb = rgb_matrix_hsv_to_rgb(effect_func(hsv, dx, dy, i, time, 3100, 2));
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
-        for (uint8_t i = DRIVER_LED_TOTAL-23; i < DRIVER_LED_TOTAL-17; i++) {
+        for (uint8_t i = RGB_MATRIX_LED_COUNT-23; i < RGB_MATRIX_LED_COUNT-17; i++) {
             RGB_MATRIX_TEST_LED_FLAGS();
             int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
             int16_t dy  = g_led_config.point[i].y - k_rgb_matrix_center.y;
             RGB     rgb = rgb_matrix_hsv_to_rgb(effect_func(hsv, dx, dy, i, time, 3100, 2));
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
-        for (uint8_t i = DRIVER_LED_TOTAL-11; i < DRIVER_LED_TOTAL-5; i++) {
+        for (uint8_t i = RGB_MATRIX_LED_COUNT-11; i < RGB_MATRIX_LED_COUNT-5; i++) {
             RGB_MATRIX_TEST_LED_FLAGS();
             int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
             int16_t dy  = g_led_config.point[i].y - k_rgb_matrix_center.y;
@@ -96,14 +96,14 @@ bool startup_effect_runner(effect_params_t* params, dx_dy_i_f effect_func) {
             RGB     rgb = rgb_matrix_hsv_to_rgb(effect_func(hsv, dx, dy, i, time, 3100, 3));
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
-        for (uint8_t i = DRIVER_LED_TOTAL-17; i < DRIVER_LED_TOTAL-11; i++) {
+        for (uint8_t i = RGB_MATRIX_LED_COUNT-17; i < RGB_MATRIX_LED_COUNT-11; i++) {
             RGB_MATRIX_TEST_LED_FLAGS();
             int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
             int16_t dy  = g_led_config.point[i].y - k_rgb_matrix_center.y;
             RGB     rgb = rgb_matrix_hsv_to_rgb(effect_func(hsv, dx, dy, i, time, 3100, 3));
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
-        for (uint8_t i = DRIVER_LED_TOTAL-5; i < DRIVER_LED_TOTAL; i++) {
+        for (uint8_t i = RGB_MATRIX_LED_COUNT-5; i < RGB_MATRIX_LED_COUNT; i++) {
             RGB_MATRIX_TEST_LED_FLAGS();
             int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
             int16_t dy  = g_led_config.point[i].y - k_rgb_matrix_center.y;
@@ -123,7 +123,7 @@ bool startup_effect_runner(effect_params_t* params, dx_dy_i_f effect_func) {
         rgb_matrix_set_color_all(0, 0, 0);
     }
 
-    return led_max < DRIVER_LED_TOTAL;
+    return led_max < RGB_MATRIX_LED_COUNT;
 }
 
 static HSV STARTUP_math(HSV hsv, int16_t dx, int16_t dy, uint8_t i, uint8_t time, uint16_t offset, uint8_t mode) {
@@ -148,9 +148,9 @@ static HSV STARTUP_math(HSV hsv, int16_t dx, int16_t dy, uint8_t i, uint8_t time
     } else {
         v = (timer_elapsed32(timer) - offset)/3;
         hsv.v = hsv.v - v;
-        if (hsv.v < 0) hsv.v = 0; 
+        if (hsv.v < 0) hsv.v = 0;
     }
-    
+
     hsv.h = atan2_8(dy, dx) + time;
     return hsv;
 }
