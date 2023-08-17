@@ -106,6 +106,7 @@ __attribute__((weak)) RGB rgb_matrix_hsv_to_rgb(HSV hsv) {
 #endif
 
 // globals
+bool         g_suspend_state = false; // kruboard
 rgb_config_t rgb_matrix_config; // TODO: would like to prefix this with g_ for global consistancy, do this in another pr
 uint32_t     g_rgb_timer;
 #ifdef RGB_MATRIX_FRAMEBUFFER_EFFECTS
@@ -230,6 +231,7 @@ void process_rgb_matrix(uint8_t row, uint8_t col, bool pressed) {
         memcpy(&last_hit_buffer.y[0], &last_hit_buffer.y[led_count], LED_HITS_TO_REMEMBER - led_count);
         memcpy(&last_hit_buffer.tick[0], &last_hit_buffer.tick[led_count], (LED_HITS_TO_REMEMBER - led_count) * 2); // 16 bit
         memcpy(&last_hit_buffer.index[0], &last_hit_buffer.index[led_count], LED_HITS_TO_REMEMBER - led_count);
+        memcpy(&last_hit_buffer.color[0], &last_hit_buffer.color[led_count], LED_HITS_TO_REMEMBER - led_count); // kruboard
         last_hit_buffer.count = LED_HITS_TO_REMEMBER - led_count;
     }
 
@@ -239,6 +241,7 @@ void process_rgb_matrix(uint8_t row, uint8_t col, bool pressed) {
         last_hit_buffer.y[index]     = g_led_config.point[led[i]].y;
         last_hit_buffer.index[index] = led[i];
         last_hit_buffer.tick[index]  = 0;
+        last_hit_buffer.color[index] = rand() % (255 + 1 - 0) + 0; // kruboard
         last_hit_buffer.count++;
     }
 #endif // RGB_MATRIX_KEYREACTIVE_ENABLED
