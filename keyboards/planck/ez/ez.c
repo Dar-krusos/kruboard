@@ -225,7 +225,7 @@ void keyboard_post_init_kb(void) {
 void eeconfig_init_kb(void) {  // EEPROM is getting reset!
     keyboard_config.raw = 0;
     keyboard_config.rgb_matrix_enable = true;
-    keyboard_config.led_level = 4;
+    keyboard_config.led_level = 1; // kruboard 4 -> 1
     eeconfig_update_kb(keyboard_config.raw);
     eeconfig_init_user();
 }
@@ -345,7 +345,7 @@ const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
     {{5, 5}, {4, 5}, {3, 5}, {2, 5}, {1, 5}, {0, 5}},
     {{5, 6}, {4, 6}, {3, 6}, {2, 6}, {1, 6}, {0, 6}},
     {{5, 3}, {4, 3}, {3, 3}, {2, 3}, {1, 3}, {0, 3}},
-    
+
     {{5, 0}, {4, 0}, {3, 0}, {2, 0}, {1, 0}, {0, 0}},
     {{5, 1}, {4, 1}, {3, 1}, {2, 1}, {1, 1}, {0, 1}},
     {{5, 2}, {4, 2}, {3, 2}, {2, 2}, {1, 2}, {0, 2}},
