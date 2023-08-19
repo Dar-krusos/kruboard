@@ -85,9 +85,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Raise
   * ,-----------------------------------------------------------------------------------.
-  * |  F13 |  F1  |  F2  |  F3  |  F4  | Vol- | Vol+ |   {  |   }  |   (  |   )  |      |
+  * |  F13 |  F1  |  F2  |  F3  |  F4  | Vol- | Vol+ |   &  |   *  |   [  |   ]  |      |
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Del  |  F5  |  F6  |  F7  |  F8  | Home | End  |   _  |   -  |   [  |   ]  |   |  |
+  * | Del  |  F5  |  F6  |  F7  |  F8  | Home | End  |   _  |   -  |   {  |   }  |   |  |
   * |------+------+------+------+------+------|------+------+------+------+------+------|
   * |      |  F9  |  F10 |  F11 |  F12 | PgUp | PgDw |Macro1|Macro2|Macro3|Macro4|   \  |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -95,8 +95,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * `-----------------------------------------------------------------------------------'
   */
   [_RAISE] = LAYOUT_planck_grid(
-    KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_VOLD, KC_VOLU, KC_LCBR, KC_RCBR, KC_LPRN, KC_RPRN, _______,
-    KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_HOME, KC_END,  KC_UNDS, KC_MINS, KC_LBRC, KC_RBRC, KC_PIPE,
+    KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_VOLD, KC_VOLU, KC_AMPR, KC_ASTR, KC_LBRC, KC_RBRC, _______,
+    KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_HOME, KC_END,  KC_UNDS, KC_MINS, KC_LCBR, KC_RCBR, KC_PIPE,
     _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_PGUP, KC_PGDN, MACRO_1, MACRO_2, MACRO_3, MACRO_4, KC_BSLS,
     _______, _______, _______, _______, _______, _______, KC_NO,   _______, KC_PSCR, KC_MPRV, KC_MNXT, KC_MPLY
   ),
