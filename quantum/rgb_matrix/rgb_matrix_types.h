@@ -46,7 +46,8 @@ typedef struct PACKED {
     uint8_t  y[LED_HITS_TO_REMEMBER];
     uint8_t  index[LED_HITS_TO_REMEMBER];
     uint16_t tick[LED_HITS_TO_REMEMBER];
-    uint8_t  color[LED_HITS_TO_REMEMBER]; // kruboard
+    uint8_t  hue[LED_HITS_TO_REMEMBER]; // kruboard
+    uint8_t  sat[LED_HITS_TO_REMEMBER]; // kruboard
 } last_hit_t;
 #endif // RGB_MATRIX_KEYREACTIVE_ENABLED
 
