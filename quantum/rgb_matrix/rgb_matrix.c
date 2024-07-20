@@ -213,12 +213,11 @@ void rgb_matrix_handle_key_event(uint8_t row, uint8_t col, bool pressed) {
     }
 
     if (last_hit_buffer.count + led_count > LED_HITS_TO_REMEMBER) {
-        memmove(&last_hit_buffer.x[0], &last_hit_buffer.x[led_count], LED_HITS_TO_REMEMBER - led_count);
-        memmove(&last_hit_buffer.y[0], &last_hit_buffer.y[led_count], LED_HITS_TO_REMEMBER - led_count);
-        memmove(&last_hit_buffer.tick[0], &last_hit_buffer.tick[led_count], (LED_HITS_TO_REMEMBER - led_count) * 2); // 16 bit
-        memmove(&last_hit_buffer.index[0], &last_hit_buffer.index[led_count], LED_HITS_TO_REMEMBER - led_count);
-        memmove(&last_hit_buffer.hue[0], &last_hit_buffer.hue[led_count], LED_HITS_TO_REMEMBER - led_count); // kruboard
-        memmove(&last_hit_buffer.sat[0], &last_hit_buffer.sat[led_count], LED_HITS_TO_REMEMBER - led_count); // kruboard
+        memcpy(&last_hit_buffer.x[0], &last_hit_buffer.x[led_count], LED_HITS_TO_REMEMBER - led_count);
+        memcpy(&last_hit_buffer.y[0], &last_hit_buffer.y[led_count], LED_HITS_TO_REMEMBER - led_count);
+        memcpy(&last_hit_buffer.tick[0], &last_hit_buffer.tick[led_count], (LED_HITS_TO_REMEMBER - led_count) * 2); // 16 bit
+        memcpy(&last_hit_buffer.index[0], &last_hit_buffer.index[led_count], LED_HITS_TO_REMEMBER - led_count);
+        memcpy(&last_hit_buffer.hue[0], &last_hit_buffer.hue[led_count], LED_HITS_TO_REMEMBER - led_count); // kruboard
         last_hit_buffer.count = LED_HITS_TO_REMEMBER - led_count;
     }
 
@@ -229,7 +228,6 @@ void rgb_matrix_handle_key_event(uint8_t row, uint8_t col, bool pressed) {
         last_hit_buffer.index[index] = led[i];
         last_hit_buffer.tick[index]  = 0;
         last_hit_buffer.hue[index] = random8(); // kruboard
-        last_hit_buffer.sat[index] = 150 + scale8(random8(), 256-150); // kruboard
         last_hit_buffer.count++;
     }
 #endif // RGB_MATRIX_KEYREACTIVE_ENABLED

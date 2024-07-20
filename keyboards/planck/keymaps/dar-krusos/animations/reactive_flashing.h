@@ -1,11 +1,9 @@
 #ifdef RGB_MATRIX_KEYREACTIVE_ENABLED
-#    ifndef DISABLE_RGB_MATRIX_SOLID_REACTIVE_FLASHING
-RGB_MATRIX_EFFECT(SOLID_REACTIVE_FLASHING)
+#    ifndef DISABLE_RGB_MATRIX_REACTIVE_FLASHING
+RGB_MATRIX_EFFECT(REACTIVE_FLASHING)
 #        ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
-typedef HSV (*reactive_f)(HSV hsv, uint16_t offset);
-
-bool solid_reactive_flashing_anim_runner(effect_params_t* params, reactive_f effect_func) {
+bool reactive_flashing_anim_runner(effect_params_t* params, reactive_f effect_func) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
 
     HSV hsv = {rand() % (255 + 1 - 0) + 0, 255, 255};
@@ -28,13 +26,13 @@ bool solid_reactive_flashing_anim_runner(effect_params_t* params, reactive_f eff
     return led_max < RGB_MATRIX_LED_COUNT;
 }
 
-static HSV SOLID_REACTIVE_FLASHING_math(HSV hsv, uint16_t offset) {
+static HSV REACTIVE_FLASHING_math(HSV hsv, uint16_t offset) {
     hsv.v = scale8(255 - offset, hsv.v);
     return hsv;
 }
 
-bool SOLID_REACTIVE_FLASHING(effect_params_t* params) { return solid_reactive_flashing_anim_runner(params, &SOLID_REACTIVE_FLASHING_math); }
+bool REACTIVE_FLASHING(effect_params_t* params) { return reactive_flashing_anim_runner(params, &REACTIVE_FLASHING_math); }
 
 #        endif  // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
-#    endif      // DISABLE_RGB_MATRIX_SOLID_REACTIVE_FLASHING
+#    endif      // DISABLE_RGB_MATRIX_REACTIVE_FLASHING
 #endif          // RGB_MATRIX_KEYREACTIVE_ENABLED
