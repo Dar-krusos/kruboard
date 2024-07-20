@@ -170,7 +170,7 @@ void keyboard_post_init_user(void) {
     planck_ez_right_led_off();
     user_config.raw = eeconfig_read_user();
     rgb_matrix_enable();
-    debug_enable=true;
+    // debug_enable=true;
 }
 
 void eeconfig_init_user(void) {
