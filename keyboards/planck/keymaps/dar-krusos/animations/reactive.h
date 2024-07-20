@@ -1,11 +1,9 @@
 #ifdef RGB_MATRIX_KEYREACTIVE_ENABLED
-#    ifndef DISABLE_RGB_MATRIX_SOLID_REACTIVE_RANDOM
-RGB_MATRIX_EFFECT(SOLID_REACTIVE_RANDOM)
+#    ifndef DISABLE_RGB_MATRIX_REACTIVE
+RGB_MATRIX_EFFECT(REACTIVE)
 #        ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
-typedef HSV (*reactive_f)(HSV hsv, uint16_t offset);
-
-bool solid_reactive_random_anim_runner(effect_params_t* params) {
+bool reactive_anim_runner(effect_params_t* params) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
 
     uint16_t max_tick = 65535 / rgb_matrix_config.speed;
@@ -22,15 +20,9 @@ bool solid_reactive_random_anim_runner(effect_params_t* params) {
                 tick = g_last_hit_tracker.tick[j];
                 hsv.h = g_last_hit_tracker.hue[j];
 
-                // if (sat_falloff == 2) {
-                    hsv.s = g_last_hit_tracker.sat[j];
-                    uint8_t offset = scale16by8(tick, rgb_matrix_config.speed);
-                // } else
-                //     uint8_t offset = powf((float)scale16by8(tick, rgb_matrix_config.speed)/150,10);
-
-                hsv.s = scale8(255 - offset, hsv.s);
+                uint8_t offset = powf((float)scale16by8(tick, rgb_matrix_config.speed)/150,10);
+                hsv.s = 255 - offset;
                 hsv.v = 255 - offset;
-                if (hsv.v < 0) hsv.v = 0;
                 break;
             }
         }
@@ -41,8 +33,8 @@ bool solid_reactive_random_anim_runner(effect_params_t* params) {
     return led_max < RGB_MATRIX_LED_COUNT;
 }
 
-bool SOLID_REACTIVE_RANDOM(effect_params_t* params) { return solid_reactive_random_anim_runner(params); }
+bool REACTIVE(effect_params_t* params) { return reactive_anim_runner(params); }
 
 #        endif  // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
-#    endif      // DISABLE_RGB_MATRIX_SOLID_REACTIVE_RANDOM
+#    endif      // DISABLE_RGB_MATRIX_REACTIVE
 #endif          // RGB_MATRIX_KEYREACTIVE_ENABLED

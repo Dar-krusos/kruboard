@@ -156,7 +156,7 @@ static uint32_t startup_timer = 0;
 typedef union {
   uint32_t raw;
   struct {
-    uint8_t reactive_mode :5;
+    uint8_t reactive_mode :3;
     uint8_t sat_falloff :2;
   };
 } user_config_t;
@@ -170,7 +170,7 @@ void keyboard_post_init_user(void) {
     planck_ez_right_led_off();
     user_config.raw = eeconfig_read_user();
     rgb_matrix_enable();
-    // debug_enable=true;
+    debug_enable=true;
 }
 
 void eeconfig_init_user(void) {
@@ -206,19 +206,19 @@ void set_to_reactive(void) {
 
     switch (user_config.reactive_mode) {
         case 0:
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_SOLID_REACTIVE_RANDOM);
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE);
             break;
         case 1:
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_SOLID_REACTIVE_RANDOM_SATURATED);
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_SAT_FADE);
             break;
         case 2:
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_SOLID_WHITE_REACTIVE_RANDOM);
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_PASTEL);
             break;
         case 3:
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_SOLID_WHITE_REACTIVE_RANDOM_SATURATED);
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_WHITE);
             break;
         case 4:
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_SOLID_REACTIVE_FLASHING);
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_FLASHING);
             break;
     }
 }
@@ -246,12 +246,22 @@ bool rgb_matrix_indicators_user(void) {
         }
     } else {
         if (adjust == 1 && layer_state_is(_ADJUST)) {
-            switch (user_config.reactive_mode) { // set reactive key animation
-                case 4:
-                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_LAYER_ADJUST_REACTIVE_FLASHING);
+            clear_rgb();
+            switch (user_config.reactive_mode) { // set reactive preview animation
+                case 0:
+                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE);
                     break;
-                default:
-                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_LAYER_ADJUST_REACTIVE_RANDOM);
+                case 1:
+                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_SAT_FADE);
+                    break;
+                case 2:
+                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL);
+                    break;
+                case 3:
+                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_WHITE);
+                    break;
+                case 4:
+                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_FLASHING);
                     break;
             }
             adjust = 2;

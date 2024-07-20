@@ -31,7 +31,8 @@
         "xstring": "c",
         "regex": "c",
         "xiosbase": "c",
-        "ios": "c"
+        "ios": "c",
+        "atomic": "c"
     },
     "[markdown]": {
         "editor.trimAutoWhitespace": false,
