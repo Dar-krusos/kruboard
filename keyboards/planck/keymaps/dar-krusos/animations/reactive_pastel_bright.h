@@ -1,9 +1,9 @@
 #ifdef RGB_MATRIX_KEYREACTIVE_ENABLED
-#    ifndef DISABLE_RGB_MATRIX_REACTIVE_PASTEL
-RGB_MATRIX_EFFECT(REACTIVE_PASTEL)
+#    ifndef DISABLE_RGB_MATRIX_REACTIVE_PASTEL_BRIGHT
+RGB_MATRIX_EFFECT(REACTIVE_PASTEL_BRIGHT)
 #        ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
-bool reactive_pastel_anim_runner(effect_params_t* params) {
+bool reactive_pastel_bright_anim_runner(effect_params_t* params) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
 
     for (uint8_t i = led_min; i < led_max; i++) {
@@ -14,10 +14,10 @@ bool reactive_pastel_anim_runner(effect_params_t* params) {
         // Reverse search to find most recent key hit
         for (int8_t j = g_last_hit_tracker.count - 1; j >= 0; j--) {
             if (g_last_hit_tracker.index[j] == i && g_last_hit_tracker.tick[j] < 65535 / rgb_matrix_config.speed) {
+                uint16_t tick = g_last_hit_tracker.tick[j];
                 hsv.h = g_last_hit_tracker.hue[j];
-                uint8_t offset = scale16by8(g_last_hit_tracker.tick[j], rgb_matrix_config.speed);
-                hsv.s = 255 - offset;
-                hsv.v = 255 - offset;
+                hsv.s = 255 - scale16by8(tick, rgb_matrix_config.speed);
+                hsv.v = 255 - powf((float)scale16by8(tick, rgb_matrix_config.speed)/150,10);
                 break;
             }
         }
@@ -28,8 +28,8 @@ bool reactive_pastel_anim_runner(effect_params_t* params) {
     return led_max < RGB_MATRIX_LED_COUNT;
 }
 
-bool REACTIVE_PASTEL(effect_params_t* params) { return reactive_pastel_anim_runner(params); }
+bool REACTIVE_PASTEL_BRIGHT(effect_params_t* params) { return reactive_pastel_bright_anim_runner(params); }
 
 #        endif  // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
-#    endif      // DISABLE_RGB_MATRIX_REACTIVE_PASTEL
+#    endif      // DISABLE_RGB_MATRIX_REACTIVE_PASTEL_BRIGHT
 #endif          // RGB_MATRIX_KEYREACTIVE_ENABLED

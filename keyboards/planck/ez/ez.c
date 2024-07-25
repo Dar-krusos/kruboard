@@ -245,27 +245,27 @@ void eeconfig_init_kb(void) {  // EEPROM is getting reset!
 #    define PLANCK_EZ_LED_ADJUST 6
 #endif
 
-layer_state_t layer_state_set_kb(layer_state_t state) {
-    planck_ez_left_led_off();
-    planck_ez_right_led_off();
-    state = layer_state_set_user(state);
-    uint8_t layer = get_highest_layer(state);
-    switch (layer) {
-        case PLANCK_EZ_LED_LOWER:
-            planck_ez_left_led_on();
-            break;
-        case PLANCK_EZ_LED_RAISE:
-            planck_ez_right_led_on();
-            break;
-        case PLANCK_EZ_LED_ADJUST:
-            planck_ez_right_led_on();
-            planck_ez_left_led_on();
-            break;
-        default:
-            break;
-    }
-    return state;
-}
+// layer_state_t layer_state_set_kb(layer_state_t state) { kruboard
+//     planck_ez_left_led_off();
+//     planck_ez_right_led_off();
+//     state = layer_state_set_user(state);
+//     uint8_t layer = get_highest_layer(state);
+//     switch (layer) {
+//         case PLANCK_EZ_LED_LOWER:
+//             planck_ez_left_led_on();
+//             break;
+//         case PLANCK_EZ_LED_RAISE:
+//             planck_ez_right_led_on();
+//             break;
+//         case PLANCK_EZ_LED_ADJUST:
+//             planck_ez_right_led_on();
+//             planck_ez_left_led_on();
+//             break;
+//         default:
+//             break;
+//     }
+//     return state;
+// }
 #endif
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {

@@ -1,4 +1,5 @@
 /* To Do
+- Block last hit counter when layers on
 - Find a way to set variables in keymap that can be read in animation headers, and combine like headers
 */
 
@@ -17,7 +18,8 @@ enum planck_keycodes {
   MACRO_3,
   MACRO_4,
   MACRO_5,
-  MACRO_6
+  MACRO_6,
+  MACRO_7
 };
 
 enum planck_layers {
@@ -72,56 +74,56 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Lower
   * ,-----------------------------------------------------------------------------------.
-  * |   `  |   !  |   @  |   #  |   $  |   %  |   ^  |   7  |   8  |   9  |   -  |      |
+  * |   `  |   !  |   @  |   #  |   $  |   %  | Tab  |   7  |   8  |   9  |   -  |      |
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Del  |   1  |   2  |   3  |   4  |   5  |   (  |   4  |   5  |   6  |   +  |      |
+  * | Del  |   1  |   2  |   3  |   4  |   5  | PgUp |   4  |   5  |   6  |   +  |      |
   * |------+------+------+------+------+------|------+------+------+------+------+------|
-  * |      |   6  |   7  |   8  |  9   |   0  |   )  |   1  |   2  |   3  |   *  |   /  |
+  * |      |   6  |   7  |   8  |   9  |   0  | PgDw |   1  |   2  |   3  |   *  |   /  |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * |      |      |      |      |      |             |   0  |   .  |   ,  |      |   =  |
+  * |      |      |      |      |      |             |   .  |   0  |   ,  |      |   =  |
   * `-----------------------------------------------------------------------------------'
   */
   [_LOWER] = LAYOUT_planck_grid(
-    KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______,
-    KC_DEL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_LPRN, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, KC_PENT,
-    _______, KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_RPRN, KC_KP_1, KC_KP_2, KC_KP_3, KC_PAST, KC_PSLS,
-    _______, _______, _______, _______, _______, _______, KC_NO,   KC_PDOT, KC_KP_0, KC_COMM, KC_NO,   KC_EQL
+    KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_TAB,  KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______,
+    KC_DEL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_PGUP, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, KC_PENT,
+    _______, KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_PGDN, KC_KP_1, KC_KP_2, KC_KP_3, KC_PAST, KC_PSLS,
+    _______, _______, _______, _______, _______, _______, _______, KC_PDOT, KC_KP_0, KC_COMM, KC_NO,   KC_EQL
   ),
 
   /* Raise
   * ,-----------------------------------------------------------------------------------.
-  * |  F13 |  F1  |  F2  |  F3  |  F4  | Vol- | Vol+ |   &  |   *  |   [  |   ]  |      |
+  * |  F13 |  F1  |  F2  |  F3  |  F4  |      |   ^  |   &  |   *  |   [  |   ]  |      |
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Del  |  F5  |  F6  |  F7  |  F8  | Home | End  |   _  |   -  |   {  |   }  |   |  |
+  * | Del  |  F5  |  F6  |  F7  |  F8  |      | Home |   _  |   -  |   (  |   )  |      |
   * |------+------+------+------+------+------|------+------+------+------+------+------|
-  * |      |  F9  |  F10 |  F11 |  F12 | PgUp | PgDw |Macro1|Macro2|Macro3|Macro4|   \  |
+  * |      |  F9  |  F10 |  F11 |  F12 |      | End  |Macro1|Macro2|Macro3|Macro4|   \  |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
   * |      |      |      |      |      |             |      |PrtScr| Prev | Next | Play |
   * `-----------------------------------------------------------------------------------'
   */
   [_RAISE] = LAYOUT_planck_grid(
-    KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_VOLD, KC_VOLU, KC_AMPR, KC_ASTR, KC_LBRC, KC_RBRC, _______,
-    KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_HOME, KC_END,  KC_UNDS, KC_MINS, KC_LCBR, KC_RCBR, KC_PIPE,
-    _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_PGUP, KC_PGDN, MACRO_1, MACRO_2, MACRO_3, MACRO_4, KC_BSLS,
+    KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_NO,   KC_CIRC, KC_AMPR, KC_ASTR, KC_LBRC, KC_RBRC, _______,
+    KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_NO,   KC_HOME, KC_UNDS, KC_MINS, KC_LPRN, KC_RPRN, _______,
+    _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_NO,   KC_END,  MACRO_1, MACRO_2, MACRO_3, MACRO_4, KC_BSLS,
     _______, _______, _______, _______, _______, _______, KC_NO,   _______, KC_PSCR, KC_MPRV, KC_MNXT, KC_MPLY
   ),
 
   /* Adjust (Lower + Raise)
   * ,-----------------------------------------------------------------------------------.
-  * |Disabl|      |      |      |      |      |      |      |      |      |      | Sleep|
+  * |Disabl|      |      |      |      |      |LEDlvl|      |Reboot|      |      | Sleep|
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Caps |      |      |      |      |KBMuse|AudTog|      |      |      |      |      |
+  * | Caps |      | Vol- | Vol+ |      |KBMuse|AudTog| Song1|      |      |      |      |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * |      |      |      |      |      |RGBTog|RGBTyp|      |      |      |      |      |
+  * |      |      |      |      |      |RGBTog|RGBTyp|      |      |      |      |NumLck|
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * |      |      |Layout|      |      |             |      |      |QKBOOT|      |NUMLCK|
+  * |      |      |Layout|      |      |             |      |      |Bootld|      |      |
   * `-----------------------------------------------------------------------------------'
   */
   [_ADJUST] = LAYOUT_planck_grid(
-    DISABLE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_SLEP,
-    KC_CAPS, KC_NO,   KC_NO,   KC_NO,   KC_NO,   MU_TOGG, KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   MACRO_5, MACRO_6, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-    KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_BOOT, KC_NO,   KC_NUM
+    DISABLE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
+    KC_CAPS, KC_NO,   KC_VOLD, KC_VOLU, KC_NO,   MU_TOGG, KC_MUTE, MACRO_5, KC_NO,   KC_NO,   KC_NO,   KC_NO,
+    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   MACRO_6, MACRO_7, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
+    KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_BOOT, KC_NO,   KC_NO
   ),
 
   /* DISABLE
@@ -150,13 +152,19 @@ static bool caps_lock = false;
 static bool rgb_on = true;
 static bool music = false;
 static bool mute = false;
-static uint8_t adjust = 0;
+static uint8_t change_preview = 0;
+static uint8_t layer_sat = 255;
+static uint8_t layer_val = 255;
 static uint32_t startup_timer = 0;
+
+#ifdef AUDIO_ENABLE
+    float everything_stays[][2] = SONG(EVERYTHING_STAYS);
+#endif
 
 typedef union {
   uint32_t raw;
   struct {
-    uint8_t reactive_mode :3;
+    uint8_t reactive_mode :4;
     uint8_t sat_falloff :2;
   };
 } user_config_t;
@@ -180,10 +188,6 @@ void eeconfig_init_user(void) {
     eeconfig_update_user(user_config.raw);
 }
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
-}
-
 void clear_rgb(void) {
     for (uint8_t i = 0; i < 47; i++) {
         rgb_matrix_set_color(i, 0, 0, 0);
@@ -191,6 +195,7 @@ void clear_rgb(void) {
 }
 
 void set_to_reactive(void) {
+    // TO DO
     // switch (user_config.reactive_mode) {
     //     case 0:
     //     case 2:
@@ -207,95 +212,229 @@ void set_to_reactive(void) {
     switch (user_config.reactive_mode) {
         case 0:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE);
+                layer_sat = 255;
+                layer_val = 255;
             break;
         case 1:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_SAT_FADE);
             break;
         case 2:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_PASTEL);
+                layer_sat = 170;
+                layer_val = 205;
             break;
         case 3:
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_WHITE);
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_PASTEL_BRIGHT);
+                layer_sat = 170;
+                layer_val = 255;
             break;
         case 4:
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_WHITE);
+                layer_sat = 255;
+                layer_val = 255;
+            break;
+        case 5:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_FLASHING);
             break;
     }
 }
 
 void startup(void) {
+    stop_all_notes();
     rgb_matrix_set_speed_noeeprom(60);
     set_to_reactive();
     startup_state = false;
 }
 
-bool rgb_matrix_indicators_user(void) {
-    if (music) return false;
-    if (adjust == 0 && layer_state_is(_ADJUST))
-        adjust = 1;
+layer_state_t layer_state_set_kb(layer_state_t state) {
+    state = layer_state_set_user(state);
 
-    if (!rgb_on) {
-        if (adjust == 2)
-            adjust = 1;
-
-        if (layer_state_is(_ADJUST)) {
-            rgb_matrix_set_color(29, 194, 4, 77); // set MACRO_5 color
-        } else if (adjust == 1 && !layer_state_is(_ADJUST)) {
-            rgb_matrix_set_color(29, 0, 0, 0); // clear MACRO_5 color
-            adjust = 0;
-        }
-    } else {
-        if (adjust == 1 && layer_state_is(_ADJUST)) {
-            clear_rgb();
-            switch (user_config.reactive_mode) { // set reactive preview animation
-                case 0:
-                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE);
-                    break;
-                case 1:
-                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_SAT_FADE);
-                    break;
-                case 2:
-                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL);
-                    break;
-                case 3:
-                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_WHITE);
-                    break;
-                case 4:
-                    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_FLASHING);
-                    break;
-            }
-            adjust = 2;
-        } else if (adjust == 2 && layer_state_is(_ADJUST)) {
-            rgb_matrix_set_color(0, 194, 4, 77); // DISABLE
-            rgb_matrix_set_color(11, 194, 4, 77); // set KC_SLEP color
-            rgb_matrix_set_color(12, 194, 4, 77); // set KC_CAPS color
-            if (!music) rgb_matrix_set_color(17, 194, 4, 77); // set MU_TOGG off color
-            else rgb_matrix_set_color(17, 41, 50, 227); // set MU_TOGG on color
-            if (!mute) rgb_matrix_set_color(18, 194, 4, 77); // set MU_TOGG off color
-            else rgb_matrix_set_color(18, 41, 50, 227); // set MU_TOGG on color
-            rgb_matrix_set_color(29, 194, 4, 77); // set MACRO_5 color
-            rgb_matrix_set_color(38, 194, 4, 77); // set LO_SWCH color
-            rgb_matrix_set_color(44, 194, 4, 77); // set QK_BOOT color
-            rgb_matrix_set_color(46, 194, 4, 77); // set KC_NUM color
-        } else if (adjust == 2 && !layer_state_is(_ADJUST)) {
-            for (int8_t i = sizeof(g_last_hit_tracker.count) - 1; i >= 0; i--) {
-                g_last_hit_tracker.tick[i] = 30000;
-            }
-            clear_rgb();
-            set_to_reactive();
-            adjust = 0;
+    if (rgb_on && !caps_lock) {
+        switch (get_highest_layer(layer_state_set_user(state))) {
+            case PLANCK_EZ_LED_LOWER:
+                planck_ez_left_led_on();
+                break;
+            case PLANCK_EZ_LED_RAISE:
+                planck_ez_right_led_on();
+                break;
+            case PLANCK_EZ_LED_ADJUST:
+                planck_ez_right_led_on();
+                planck_ez_left_led_on();
+                break;
+            default:
+                planck_ez_left_led_off();
+                planck_ez_right_led_off();
+                break;
         }
     }
+    return state;
+}
 
+layer_state_t layer_state_set_user(layer_state_t state) {
+    state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+    clear_rgb();
+    #define LAYER_ACTIVE
+
+    if (rgb_on && !music) {
+        rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
+        switch (get_highest_layer(state)) {
+            case _LOWER:
+                for (uint8_t i=0; i < 48; i++) {
+                    // special characters
+                    if (i>=0 && i<=5) {
+                        HSV hsv = {195, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // operation keys
+                    if (i==6 || i==12 || i==18 || i==30) {
+                        HSV hsv = {247, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // numbers
+                    if ((i>=13 && i<=17) || \
+                        (i>=25 && i<=29)) {
+                        HSV hsv = {15, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // numpad numbers
+                    if ((i>=7 && i<=9) || \
+                        (i>=19 && i<=21) || \
+                        (i>=31 && i<=33) || \
+                        (i>=42 && i<=44)) {
+                        HSV hsv = {161, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+
+                    // numpad operations
+                    if (i==10 || i==22 || i==34 || i==35 || i==46) {
+                        HSV hsv = {95, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                }
+                break;
+            case _RAISE:
+                for (uint8_t i=0; i < 48; i++) {
+                    // special characters
+                    if (i==0 || \
+                        (i>=6 && i<=10) || \
+                        (i>=19 && i<=22) || \
+                        i==35) {
+                        HSV hsv = {195, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // F1-12
+                    if ((i>=1 && i<=4) || \
+                        (i>=13 && i<=16) || \
+                        (i>=25 && i<=28)) {
+                        HSV hsv = {15, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // operation keys
+                    if (i==12 || i==18 || i==30 || i>=43) {
+                        HSV hsv = {247, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // macros
+                    if (i>=31 && i<=34) {
+                        HSV hsv = {41, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                }
+                break;
+            case _ADJUST:
+                change_preview = 1;
+                for (uint8_t i=0; i < 47; i++) {
+                    // macros
+                    if (i==0 || i==19) {
+                        HSV hsv = {41, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // operation keys
+                    if (i==8 || i==11 || i==12 || i==14 || i==15 || i==17 || i==29 || i==35 || i==38 || i==44) {
+                        HSV hsv = {247, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // mute
+                    if (i==18) {
+                        if (!mute) {
+                            HSV hsv = {247, layer_sat, layer_val};
+                            RGB rgb = hsv_to_rgb(hsv);
+                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        } else {
+                            HSV hsv = {166, layer_sat, layer_val};
+                            RGB rgb = hsv_to_rgb(hsv);
+                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        }
+                    }
+                }
+                break;
+            default: //  for any other layers, or the default layer
+                set_to_reactive();
+                #undef LAYER_ACTIVE
+                break;
+        }
+    } else if (!rgb_on && layer_state_cmp(state, _ADJUST)) {
+        rgb_matrix_set_color(29, 194, 4, 77); // set MACRO_5 color
+    }
+    return state;
+}
+
+bool rgb_matrix_indicators_user(void) {
+    if (change_preview == 1) {
+        switch (user_config.reactive_mode) { // set reactive preview animation
+            case 0:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE);
+                layer_sat = 255;
+                layer_val = 255;
+                break;
+            case 1:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_SAT_FADE);
+                break;
+            case 2:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL);
+                layer_sat = 170;
+                layer_val = 205;
+                break;
+            case 3:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL_BRIGHT);
+                layer_sat = 170;
+                layer_val = 255;
+                break;
+            case 4:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_WHITE);
+                layer_sat = 255;
+                layer_val = 255;
+                break;
+            case 5:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_FLASHING);
+                break;
+        }
+        change_preview = 0;
+    }
     return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case KC_ESCAPE:
-      if (record->event.pressed && startup_state == true) {
-        startup();
-        return false;
+      if (record->event.pressed) {
+        if (startup_state == true) {
+            startup();
+            return false;
+        } else {
+            stop_all_notes();
+        }
       }
       break;
     case MACRO_0:
@@ -319,24 +458,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_Z)))));
       break;
     case MACRO_5:
+      if (record->event.pressed)
+        #ifdef AUDIO_ENABLE
+            PLAY_SONG(everything_stays);
+        #endif
+      break;
+    case MACRO_6:
       if (record->event.pressed) {
         rgb_on = !rgb_on;
-        if (!rgb_on)
+        if (!rgb_on) {
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
-        else
+            planck_ez_left_led_off();
+            planck_ez_right_led_off();
+        } else
             set_to_reactive();
 
         clear_rgb();
       }
       break;
-    case MACRO_6:
+    case MACRO_7:
         if (record->event.pressed) {
             user_config.reactive_mode += 1;
-            if (user_config.reactive_mode > 4)
+            if (user_config.reactive_mode > 5)
                 user_config.reactive_mode = 0;
 
             eeconfig_update_user(user_config.raw);
-            adjust = 0; // resets adjust rgb
+            change_preview = 1;
         }
         break;
     case DISABLE:
@@ -347,29 +494,40 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case KC_CAPS:
       if (record->event.pressed) {
         caps_lock = !caps_lock;
+        if (rgb_on) {
+            if (caps_lock) {
+                planck_ez_left_led_on();
+                planck_ez_right_led_on();
+            } else {
+                planck_ez_left_led_off();
+                planck_ez_right_led_off();
+            }
+        }
       }
       break;
     case MU_TOGG:
       if (record->event.pressed) {
+        music = !music;
         if (!music) {
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
-            clear_rgb();
-            if (rgb_on) rgb_matrix_set_color(17, 41, 50, 227);
-        } else {
             set_to_reactive();
             if (rgb_on) rgb_matrix_set_color(17, 194, 4, 77);
+        } else {
+            clear_rgb();
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
         }
-        music = !music;
       }
       break;
     case KC_MUTE:
       if (record->event.pressed) {
+        mute = !mute;
         if (!mute) {
-            if (rgb_on) rgb_matrix_set_color(18, 41, 50, 227);
-            mute = true;
+            HSV hsv = {247, layer_sat, layer_val};
+            RGB rgb = hsv_to_rgb(hsv);
+            rgb_matrix_set_color(18, rgb.r, rgb.g, rgb.b);
         } else {
-            if (rgb_on) rgb_matrix_set_color(18, 194, 4, 77);
-            mute = false;
+            HSV hsv = {166, layer_sat, layer_val};
+            RGB rgb = hsv_to_rgb(hsv);
+            rgb_matrix_set_color(18, rgb.r, rgb.g, rgb.b);
         }
       }
       break;
@@ -448,21 +606,13 @@ void matrix_scan_user(void) {
 
     if (startup_state == true && timer_elapsed32(startup_timer) > 4600 && timer_elapsed32(startup_timer) < 4700)
         startup();
-
-    if (caps_lock) {
-        planck_ez_left_led_on();
-        planck_ez_right_led_on();
-    }
-    if (!rgb_on && !caps_lock) {
-        planck_ez_left_led_off();
-        planck_ez_right_led_off();
-    }
 }
 
 bool music_mask_user(uint16_t keycode) {
     switch (keycode) {
     case RAISE:
     case LOWER:
+    case QK_BOOT:
         return false;
     default:
         return true;

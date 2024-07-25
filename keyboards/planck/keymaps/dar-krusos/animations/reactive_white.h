@@ -11,22 +11,21 @@ RGB_MATRIX_EFFECT(REACTIVE_WHITE)
 
 bool reactive_white_anim_runner(effect_params_t* params) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
-    uint16_t max_tick = 65535 / rgb_matrix_config.speed;
 
     for (uint8_t i = led_min; i < led_max; i++) {
         RGB_MATRIX_TEST_LED_FLAGS();
 
-        HSV hsv = {0, 0, brightness};
-        uint16_t tick = max_tick;
+        uint8_t rgb_val = rgb_matrix_config.hsv.v;
+        HSV hsv = {0, 0, rgb_val};
 
         // Reverse search to find most recent key hit
         for (int8_t j = g_last_hit_tracker.count - 1; j >= 0; j--) {
-            if (g_last_hit_tracker.index[j] == i && g_last_hit_tracker.tick[j] < tick) {
-                tick = g_last_hit_tracker.tick[j];
+            if (g_last_hit_tracker.index[j] == i && g_last_hit_tracker.tick[j] < 65535 / rgb_matrix_config.speed) {
                 hsv.h = g_last_hit_tracker.hue[j];
-
-                uint8_t offset = powf((float)scale16by8(tick, rgb_matrix_config.speed)/150,10);
+                uint8_t offset = powf((float)scale16by8(g_last_hit_tracker.tick[j], rgb_matrix_config.speed)/150,10);
                 hsv.s = 255 - offset;
+                hsv.v = 255 - offset;
+                hsv.v = hsv.v > rgb_val ? hsv.v : 200;
                 break;
             }
         }

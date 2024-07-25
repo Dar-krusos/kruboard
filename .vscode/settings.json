@@ -32,7 +32,13 @@
         "regex": "c",
         "xiosbase": "c",
         "ios": "c",
-        "atomic": "c"
+        "atomic": "c",
+        "functional": "c",
+        "optional": "c",
+        "system_error": "c",
+        "xlocmon": "c",
+        "xlocnum": "c",
+        "xtr1common": "c"
     },
     "[markdown]": {
         "editor.trimAutoWhitespace": false,
