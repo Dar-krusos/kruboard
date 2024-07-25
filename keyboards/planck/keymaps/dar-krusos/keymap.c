@@ -110,19 +110,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Adjust (Lower + Raise)
   * ,-----------------------------------------------------------------------------------.
-  * |Disabl|      |      |      |      |      |LEDlvl|      |Reboot|      |      | Sleep|
+  * |Disabl|      |      |      | Song1|      |LEDlvl|      |Reboot|      |      | Sleep|
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Caps |      | Vol- | Vol+ |      |KBMuse|AudTog| Song1|      |      |      |      |
+  * | Caps |      |      | Vol- | Vol+ |KBMuse|AudTog|      |      |      |      |      |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * |      |      |      |      |      |RGBTog|RGBTyp|      |      |      |      |NumLck|
+  * |      |      |      |RGBSat|RGBVal|RGBTog|RGBTyp|      |      |      |      |NumLck|
   * |------+------+------+------+------+------+------+------+------+------+------+------|
   * |      |      |Layout|      |      |             |      |      |Bootld|      |      |
   * `-----------------------------------------------------------------------------------'
   */
   [_ADJUST] = LAYOUT_planck_grid(
-    DISABLE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
-    KC_CAPS, KC_NO,   KC_VOLD, KC_VOLU, KC_NO,   MU_TOGG, KC_MUTE, MACRO_5, KC_NO,   KC_NO,   KC_NO,   KC_NO,
-    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   MACRO_6, MACRO_7, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
+    DISABLE, KC_NO,   KC_NO,   KC_NO,   MACRO_5, KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
+    KC_CAPS, KC_NO,   KC_NO,   KC_VOLD, KC_VOLU, MU_TOGG, KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+    _______, KC_NO,   KC_NO,   RGB_SAI, RGB_VAI, MACRO_6, MACRO_7, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
     KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_BOOT, KC_NO,   KC_NO
   ),
 
@@ -152,7 +152,6 @@ static bool caps_lock = false;
 static bool rgb_on = true;
 static bool music = false;
 static bool mute = false;
-static uint8_t change_preview = 0;
 static uint8_t layer_sat = 255;
 static uint8_t layer_val = 255;
 static uint32_t startup_timer = 0;
@@ -194,6 +193,22 @@ void clear_rgb(void) {
     }
 }
 
+void set_sat_val(void) {
+    switch (user_config.reactive_mode) {
+        case 2:
+            layer_sat = 170;
+            layer_val = 100;
+            break;
+        case 3:
+            layer_sat = 170;
+            layer_val = 255;
+            break;
+        default:
+            layer_sat = rgb_matrix_config.hsv.s;
+            layer_val = rgb_matrix_config.hsv.v;
+            break;
+    }
+}
 void set_to_reactive(void) {
     // TO DO
     // switch (user_config.reactive_mode) {
@@ -209,29 +224,22 @@ void set_to_reactive(void) {
     //         break;
     // }
 
+    set_sat_val();
     switch (user_config.reactive_mode) {
         case 0:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE);
-                layer_sat = 255;
-                layer_val = 255;
             break;
         case 1:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_SAT_FADE);
             break;
         case 2:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_PASTEL);
-                layer_sat = 170;
-                layer_val = 205;
             break;
         case 3:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_PASTEL_BRIGHT);
-                layer_sat = 170;
-                layer_val = 255;
             break;
         case 4:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_WHITE);
-                layer_sat = 255;
-                layer_val = 255;
             break;
         case 5:
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_FLASHING);
@@ -244,6 +252,60 @@ void startup(void) {
     rgb_matrix_set_speed_noeeprom(60);
     set_to_reactive();
     startup_state = false;
+}
+
+void adjust_colors(void) {
+    set_sat_val();
+    switch (user_config.reactive_mode) { // set reactive preview animation
+        case 0:
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE);
+            break;
+        case 1:
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_SAT_FADE);
+            break;
+        case 2:
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL);
+            break;
+        case 3:
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL_BRIGHT);
+            break;
+        case 4:
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_WHITE);
+            break;
+        case 5:
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_FLASHING);
+            break;
+    }
+
+    for (uint8_t i=0; i < 47; i++) {
+        // macros
+        if (i==0 || i==4) {
+            HSV hsv = {41, layer_sat, layer_val};
+            RGB rgb = hsv_to_rgb(hsv);
+            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+        }
+        // operation keys
+        if (i==8 || i==11 || i==12 || \
+            (i>=15 && i<=18) || \
+            (i>=27 && i<=29) || \
+            i==35 || i==38 || i==44) {
+            HSV hsv = {247, layer_sat, layer_val};
+            RGB rgb = hsv_to_rgb(hsv);
+            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+        }
+        // mute
+        if (i==18) {
+            if (!mute) {
+                HSV hsv = {247, layer_sat, layer_val};
+                RGB rgb = hsv_to_rgb(hsv);
+                rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+            } else {
+                HSV hsv = {166, layer_sat, layer_val};
+                RGB rgb = hsv_to_rgb(hsv);
+                rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+            }
+        }
+    }
 }
 
 layer_state_t layer_state_set_kb(layer_state_t state) {
@@ -351,33 +413,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
                 }
                 break;
             case _ADJUST:
-                change_preview = 1;
-                for (uint8_t i=0; i < 47; i++) {
-                    // macros
-                    if (i==0 || i==19) {
-                        HSV hsv = {41, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-                    }
-                    // operation keys
-                    if (i==8 || i==11 || i==12 || i==14 || i==15 || i==17 || i==29 || i==35 || i==38 || i==44) {
-                        HSV hsv = {247, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-                    }
-                    // mute
-                    if (i==18) {
-                        if (!mute) {
-                            HSV hsv = {247, layer_sat, layer_val};
-                            RGB rgb = hsv_to_rgb(hsv);
-                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-                        } else {
-                            HSV hsv = {166, layer_sat, layer_val};
-                            RGB rgb = hsv_to_rgb(hsv);
-                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-                        }
-                    }
-                }
+                adjust_colors();
                 break;
             default: //  for any other layers, or the default layer
                 set_to_reactive();
@@ -385,44 +421,11 @@ layer_state_t layer_state_set_user(layer_state_t state) {
                 break;
         }
     } else if (!rgb_on && layer_state_cmp(state, _ADJUST)) {
-        rgb_matrix_set_color(29, 194, 4, 77); // set MACRO_5 color
+        HSV hsv = {247, layer_sat, layer_val};
+        RGB rgb = hsv_to_rgb(hsv);
+        rgb_matrix_set_color(29, rgb.r, rgb.g, rgb.b); // set MACRO_5 color
     }
     return state;
-}
-
-bool rgb_matrix_indicators_user(void) {
-    if (change_preview == 1) {
-        switch (user_config.reactive_mode) { // set reactive preview animation
-            case 0:
-                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE);
-                layer_sat = 255;
-                layer_val = 255;
-                break;
-            case 1:
-                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_SAT_FADE);
-                break;
-            case 2:
-                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL);
-                layer_sat = 170;
-                layer_val = 205;
-                break;
-            case 3:
-                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL_BRIGHT);
-                layer_sat = 170;
-                layer_val = 255;
-                break;
-            case 4:
-                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_WHITE);
-                layer_sat = 255;
-                layer_val = 255;
-                break;
-            case 5:
-                rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_FLASHING);
-                break;
-        }
-        change_preview = 0;
-    }
-    return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -435,6 +438,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         } else {
             stop_all_notes();
         }
+      }
+      break;
+    case LO_SWCH:
+      if (record->event.pressed) {
+        if (layer_state_cmp(default_layer_state, _DVORAK))
+          default_layer_set(1UL<<_QWERTY);
+        else default_layer_set(1UL<<_DVORAK);
       }
       break;
     case MACRO_0:
@@ -468,12 +478,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         rgb_on = !rgb_on;
         if (!rgb_on) {
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
+            clear_rgb();
             planck_ez_left_led_off();
             planck_ez_right_led_off();
+            
+            HSV hsv = {247, layer_sat, layer_val};
+            RGB rgb = hsv_to_rgb(hsv);
+            rgb_matrix_set_color(29, rgb.r, rgb.g, rgb.b); // set MACRO_5 color
         } else
-            set_to_reactive();
-
-        clear_rgb();
+            adjust_colors();
       }
       break;
     case MACRO_7:
@@ -483,7 +496,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 user_config.reactive_mode = 0;
 
             eeconfig_update_user(user_config.raw);
-            change_preview = 1;
+            adjust_colors();
         }
         break;
     case DISABLE:
@@ -505,7 +518,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       break;
-    case MU_TOGG:
+    case MU_TOGG: // music mode key
       if (record->event.pressed) {
         music = !music;
         if (!music) {
@@ -531,11 +544,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       break;
-    case LO_SWCH:
+    case RGB_SAI:
+    case RGB_VAI:
       if (record->event.pressed) {
-        if (layer_state_cmp(default_layer_state, _DVORAK))
-          default_layer_set(1UL<<_QWERTY);
-        else default_layer_set(1UL<<_DVORAK);
+        if (user_config.reactive_mode == 2 || user_config.reactive_mode == 3)
+            return false;
+        else
+            adjust_colors();
       }
       break;
     default:

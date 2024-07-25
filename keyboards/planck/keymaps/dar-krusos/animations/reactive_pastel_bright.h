@@ -14,10 +14,10 @@ bool reactive_pastel_bright_anim_runner(effect_params_t* params) {
         // Reverse search to find most recent key hit
         for (int8_t j = g_last_hit_tracker.count - 1; j >= 0; j--) {
             if (g_last_hit_tracker.index[j] == i && g_last_hit_tracker.tick[j] < 65535 / rgb_matrix_config.speed) {
-                uint16_t tick = g_last_hit_tracker.tick[j];
                 hsv.h = g_last_hit_tracker.hue[j];
-                hsv.s = 255 - scale16by8(tick, rgb_matrix_config.speed);
-                hsv.v = 255 - powf((float)scale16by8(tick, rgb_matrix_config.speed)/150,10);
+                uint16_t tick = g_last_hit_tracker.tick[j];
+                hsv.s = rgb_matrix_config.hsv.s - scale16by8(tick, rgb_matrix_config.speed);
+                hsv.v = rgb_matrix_config.hsv.v - powf((float)scale16by8(tick, rgb_matrix_config.speed)/150,10);
                 break;
             }
         }

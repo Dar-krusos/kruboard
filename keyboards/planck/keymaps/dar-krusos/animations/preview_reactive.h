@@ -8,7 +8,7 @@ bool preview_reactive_runner(effect_params_t* params) {
 
     static uint8_t  hue;
     static bool change = 0;
-    uint8_t offset = 255 - powf((float)(scale16by8(g_rgb_timer, rgb_matrix_config.speed)%255)/125,10);
+    uint8_t offset = rgb_matrix_config.hsv.v - powf((float)(scale16by8(g_rgb_timer, rgb_matrix_config.speed)%255)/125,10);
 
     if (change == 0 && offset <= 0) {
         change = 1;
@@ -17,7 +17,7 @@ bool preview_reactive_runner(effect_params_t* params) {
     if (change == 1 && offset > 0)
         change = 0;
 
-    HSV hsv = {hue, offset, offset};
+    HSV hsv = {hue, 255, offset};
     RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
     rgb_matrix_set_color(30, rgb.r, rgb.g, rgb.b); // led number = 30
 

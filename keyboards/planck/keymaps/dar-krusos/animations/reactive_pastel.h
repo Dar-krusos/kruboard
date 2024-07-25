@@ -16,8 +16,8 @@ bool reactive_pastel_anim_runner(effect_params_t* params) {
             if (g_last_hit_tracker.index[j] == i && g_last_hit_tracker.tick[j] < 65535 / rgb_matrix_config.speed) {
                 hsv.h = g_last_hit_tracker.hue[j];
                 uint8_t offset = scale16by8(g_last_hit_tracker.tick[j], rgb_matrix_config.speed);
-                hsv.s = 255 - offset;
-                hsv.v = 255 - offset;
+                hsv.s = rgb_matrix_config.hsv.s - offset;
+                hsv.v = rgb_matrix_config.hsv.v - offset;
                 break;
             }
         }

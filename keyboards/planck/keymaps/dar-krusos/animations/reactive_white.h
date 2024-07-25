@@ -3,20 +3,14 @@
 RGB_MATRIX_EFFECT(REACTIVE_WHITE)
 #        ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
-#ifdef REACTIVE_BRIGHTNESS
-    uint8_t brightness = REACTIVE_BRIGHTNESS;
-#else
-    uint8_t brightness = 200;
-#endif
-
 bool reactive_white_anim_runner(effect_params_t* params) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
 
     for (uint8_t i = led_min; i < led_max; i++) {
         RGB_MATRIX_TEST_LED_FLAGS();
 
-        uint8_t rgb_val = rgb_matrix_config.hsv.v;
-        HSV hsv = {0, 0, rgb_val};
+        uint8_t min_val = rgb_matrix_config.hsv.v;
+        HSV hsv = {0, 0, min_val};
 
         // Reverse search to find most recent key hit
         for (int8_t j = g_last_hit_tracker.count - 1; j >= 0; j--) {
@@ -24,8 +18,7 @@ bool reactive_white_anim_runner(effect_params_t* params) {
                 hsv.h = g_last_hit_tracker.hue[j];
                 uint8_t offset = powf((float)scale16by8(g_last_hit_tracker.tick[j], rgb_matrix_config.speed)/150,10);
                 hsv.s = 255 - offset;
-                hsv.v = 255 - offset;
-                hsv.v = hsv.v > rgb_val ? hsv.v : 200;
+                hsv.v = 255 - offset > min_val ? 255 - offset : min_val;
                 break;
             }
         }

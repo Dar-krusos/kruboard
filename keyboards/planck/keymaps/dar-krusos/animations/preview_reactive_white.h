@@ -3,15 +3,10 @@
 RGB_MATRIX_EFFECT(PREVIEW_REACTIVE_WHITE)
 #       ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
-#ifdef REACTIVE_BRIGHTNESS
-    uint8_t brightness_prvw = REACTIVE_BRIGHTNESS;
-#else
-    uint8_t brightness_prvw = 200;
-#endif
-
 bool preview_reactive_white_runner(effect_params_t* params) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
 
+    uint8_t min_val = rgb_matrix_config.hsv.v;
     static uint8_t  hue;
     static bool change = 0;
     uint8_t offset = 255 - powf((float)(scale16by8(g_rgb_timer, rgb_matrix_config.speed)%255)/125,10);
@@ -23,7 +18,7 @@ bool preview_reactive_white_runner(effect_params_t* params) {
     if (change == 1 && offset > 0)
         change = 0;
 
-    HSV hsv = {hue, offset, brightness_prvw};
+    HSV hsv = {hue, offset, offset > min_val ? offset : min_val};
     RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
     rgb_matrix_set_color(30, rgb.r, rgb.g, rgb.b); // led number = 30
 
