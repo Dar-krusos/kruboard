@@ -18,6 +18,8 @@ bool reactive_white_anim_runner(effect_params_t* params) {
                 hsv.h = g_last_hit_tracker.hue[j];
                 uint8_t offset = powf((float)scale16by8(g_last_hit_tracker.tick[j], rgb_matrix_config.speed)/150,10);
                 hsv.s = 255 - offset;
+                if (hsv.s < 0)
+                    hsv.s = 0;
                 hsv.v = 255 - offset > min_val ? 255 - offset : min_val;
                 break;
             }
