@@ -9,7 +9,7 @@ bool reactive_anim_runner(effect_params_t* params) {
     for (uint8_t i = led_min; i < led_max; i++) {
         RGB_MATRIX_TEST_LED_FLAGS();
 
-        HSV hsv = {0, 255, 0};
+        HSV hsv = {0, rgb_matrix_config.hsv.s, 0};
 
         // Reverse search to find most recent key hit
         for (int8_t j = g_last_hit_tracker.count - 1; j >= 0; j--) {
@@ -18,6 +18,8 @@ bool reactive_anim_runner(effect_params_t* params) {
 
                 uint8_t offset = powf((float)scale16by8(g_last_hit_tracker.tick[j], rgb_matrix_config.speed)/150,10);
                 hsv.v = rgb_matrix_config.hsv.v - offset;
+                if (hsv.v < 0)
+                    hsv.v = 0;
                 break;
             }
         }

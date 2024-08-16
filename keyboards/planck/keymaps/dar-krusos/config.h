@@ -28,7 +28,6 @@
 #define PLANCK_EZ_LED_ADJUST 4
 
 #define RGB_MATRIX_DEFAULT_SPD 120
-#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_CUSTOM_STARTUP
 #define LED_HITS_TO_REMEMBER 47
 
 //disable unused rgb effects to decrease firmware size

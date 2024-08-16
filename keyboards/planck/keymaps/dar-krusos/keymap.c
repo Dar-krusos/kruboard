@@ -12,14 +12,16 @@
 enum planck_keycodes {
   DVORAK = SAFE_RANGE,
   LO_SWCH,
+  DSKTOP,
   MACRO_0,
   MACRO_1,
   MACRO_2,
   MACRO_3,
+  SONG_1,
   MACRO_4,
-  MACRO_5,
-  MACRO_6,
-  MACRO_7
+  RGB_SAT,
+  RGB_VAL,
+  RGB_TYP
 };
 
 enum planck_layers {
@@ -51,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
     KC_TAB,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_ENTER,
     KC_LSFT, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_SLASH,
-    KC_LCTL, MACRO_0, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
+    KC_LCTL, DSKTOP, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
   ),
 
   /* Qwerty
@@ -69,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_ENTER,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_QUOT, KC_SLASH,
-    KC_LCTL, MACRO_0, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
+    KC_LCTL, DSKTOP, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
   ),
 
   /* Lower
@@ -104,7 +106,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_RAISE] = LAYOUT_planck_grid(
     KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_NO,   KC_CIRC, KC_AMPR, KC_ASTR, KC_LBRC, KC_RBRC, _______,
     KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_NO,   KC_HOME, KC_UNDS, KC_MINS, KC_LPRN, KC_RPRN, _______,
-    _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_NO,   KC_END,  MACRO_1, MACRO_2, MACRO_3, MACRO_4, KC_BSLS,
+    _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_NO,   KC_END,  MACRO_0, MACRO_1, MACRO_2, MACRO_3, KC_BSLS,
     _______, _______, _______, _______, _______, _______, KC_NO,   _______, KC_PSCR, KC_MPRV, KC_MNXT, KC_MPLY
   ),
 
@@ -120,9 +122,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * `-----------------------------------------------------------------------------------'
   */
   [_ADJUST] = LAYOUT_planck_grid(
-    DISABLE, KC_NO,   KC_NO,   KC_NO,   MACRO_5, KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
+    DISABLE, KC_NO,   KC_NO,   KC_NO,   SONG_1, KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
     KC_CAPS, KC_NO,   KC_NO,   KC_VOLD, KC_VOLU, MU_TOGG, KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-    _______, KC_NO,   KC_NO,   RGB_SAI, RGB_VAI, MACRO_6, MACRO_7, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
+    _______, KC_NO,   KC_NO,   RGB_SAT, RGB_VAL, MACRO_4, RGB_TYP, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
     KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_BOOT, KC_NO,   KC_NO
   ),
 
@@ -164,7 +166,7 @@ typedef union {
   uint32_t raw;
   struct {
     uint8_t reactive_mode :4;
-    uint8_t sat_falloff :2;
+    // uint8_t sat_falloff :2;
   };
 } user_config_t;
 
@@ -177,13 +179,14 @@ void keyboard_post_init_user(void) {
     planck_ez_right_led_off();
     user_config.raw = eeconfig_read_user();
     rgb_matrix_enable();
+    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_STARTUP);
     // debug_enable=true;
 }
 
 void eeconfig_init_user(void) {
     user_config.raw = 0;
     user_config.reactive_mode = 0;
-    user_config.sat_falloff = 1;
+    // user_config.sat_falloff = 1;
     eeconfig_update_user(user_config.raw);
 }
 
@@ -196,12 +199,9 @@ void clear_rgb(void) {
 void set_sat_val(void) {
     switch (user_config.reactive_mode) {
         case 2:
-            layer_sat = 170;
-            layer_val = 100;
-            break;
         case 3:
-            layer_sat = 170;
-            layer_val = 255;
+            layer_sat = rgb_matrix_config.hsv.s * 0.75 + 10;
+            layer_val = rgb_matrix_config.hsv.v * 0.75 + 10;
             break;
         default:
             layer_sat = rgb_matrix_config.hsv.s;
@@ -245,13 +245,6 @@ void set_to_reactive(void) {
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_REACTIVE_FLASHING);
             break;
     }
-}
-
-void startup(void) {
-    stop_all_notes();
-    rgb_matrix_set_speed_noeeprom(60);
-    set_to_reactive();
-    startup_state = false;
 }
 
 void adjust_colors(void) {
@@ -308,6 +301,13 @@ void adjust_colors(void) {
     }
 }
 
+void startup(void) {
+    stop_all_notes();
+    rgb_matrix_set_speed_noeeprom(60);
+    set_to_reactive();
+    startup_state = false;
+}
+
 layer_state_t layer_state_set_kb(layer_state_t state) {
     state = layer_state_set_user(state);
 
@@ -335,7 +335,7 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
 layer_state_t layer_state_set_user(layer_state_t state) {
     state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
     clear_rgb();
-    #define LAYER_ACTIVE
+    // #define LAYER_ACTIVE
 
     if (rgb_on && !music) {
         rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
@@ -417,13 +417,13 @@ layer_state_t layer_state_set_user(layer_state_t state) {
                 break;
             default: //  for any other layers, or the default layer
                 set_to_reactive();
-                #undef LAYER_ACTIVE
+                // #undef LAYER_ACTIVE
                 break;
         }
     } else if (!rgb_on && layer_state_cmp(state, _ADJUST)) {
         HSV hsv = {247, layer_sat, layer_val};
         RGB rgb = hsv_to_rgb(hsv);
-        rgb_matrix_set_color(29, rgb.r, rgb.g, rgb.b); // set MACRO_5 color
+        rgb_matrix_set_color(29, rgb.r, rgb.g, rgb.b); // set SONG_1 color
     }
     return state;
 }
@@ -447,33 +447,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         else default_layer_set(1UL<<_DVORAK);
       }
       break;
-    case MACRO_0:
+    case DSKTOP:
       if (record->event.pressed)
         SEND_STRING(SS_LGUI(SS_TAP(X_D)));
       break;
-    case MACRO_1:
+    case MACRO_0:
       if (record->event.pressed)
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_M)))));
       break;
-    case MACRO_2:
+    case MACRO_1:
       if (record->event.pressed)
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_W)))));
       break;
-    case MACRO_3:
+    case MACRO_2:
       if (record->event.pressed)
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_V)))));
       break;
-    case MACRO_4:
+    case MACRO_3:
       if (record->event.pressed)
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_Z)))));
       break;
-    case MACRO_5:
-      if (record->event.pressed)
-        #ifdef AUDIO_ENABLE
-            PLAY_SONG(everything_stays);
-        #endif
-      break;
-    case MACRO_6:
+    case MACRO_4:
       if (record->event.pressed) {
         rgb_on = !rgb_on;
         if (!rgb_on) {
@@ -481,24 +475,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             clear_rgb();
             planck_ez_left_led_off();
             planck_ez_right_led_off();
-            
+
             HSV hsv = {247, layer_sat, layer_val};
             RGB rgb = hsv_to_rgb(hsv);
-            rgb_matrix_set_color(29, rgb.r, rgb.g, rgb.b); // set MACRO_5 color
+            rgb_matrix_set_color(29, rgb.r, rgb.g, rgb.b); // set SONG_1 color
         } else
             adjust_colors();
       }
       break;
-    case MACRO_7:
-        if (record->event.pressed) {
-            user_config.reactive_mode += 1;
-            if (user_config.reactive_mode > 5)
-                user_config.reactive_mode = 0;
-
-            eeconfig_update_user(user_config.raw);
-            adjust_colors();
-        }
-        break;
+    case SONG_1:
+      if (record->event.pressed)
+        #ifdef AUDIO_ENABLE
+            PLAY_SONG(everything_stays);
+        #endif
+      break;
     case DISABLE:
       if (record->event.pressed) {
         rgblight_toggle_noeeprom();
@@ -544,15 +534,34 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       break;
-    case RGB_SAI:
-    case RGB_VAI:
-      if (record->event.pressed) {
-        if (user_config.reactive_mode == 2 || user_config.reactive_mode == 3)
-            return false;
-        else
+    case RGB_SAT:
+        if (record->event.pressed) {
+            if (get_mods() & MOD_MASK_SHIFT)
+                rgb_matrix_decrease_sat();
+            else
+                rgb_matrix_increase_sat();
             adjust_colors();
-      }
-      break;
+        }
+        break;
+    case RGB_VAL:
+        if (record->event.pressed) {
+            if (get_mods() & MOD_MASK_SHIFT)
+                rgb_matrix_decrease_val();
+            else
+                rgb_matrix_increase_val();
+            adjust_colors();
+        }
+        break;
+    case RGB_TYP:
+        if (record->event.pressed) {
+            user_config.reactive_mode += 1;
+            if (user_config.reactive_mode > 5)
+                user_config.reactive_mode = 0;
+
+            eeconfig_update_user(user_config.raw);
+            adjust_colors();
+        }
+        break;
     default:
       if (startup_state == true)
         return false;
