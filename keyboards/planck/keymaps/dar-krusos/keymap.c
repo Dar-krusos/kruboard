@@ -78,35 +78,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * ,-----------------------------------------------------------------------------------.
   * |   `  |   !  |   @  |   #  |   $  |   %  | Tab  |   7  |   8  |   9  |   -  |      |
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Del  |   1  |   2  |   3  |   4  |   5  | PgUp |   4  |   5  |   6  |   +  |      |
+  * | Del  |   1  |   2  |   3  |   4  |   5  |  (   |   4  |   5  |   6  |   +  |      |
   * |------+------+------+------+------+------|------+------+------+------+------+------|
-  * |      |   6  |   7  |   8  |   9  |   0  | PgDw |   1  |   2  |   3  |   *  |   /  |
+  * |      |   6  |   7  |   8  |   9  |   0  |  )   |   1  |   2  |   3  |   *  |   /  |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
   * |      |      |      |      |      |             |   .  |   0  |   ,  |      |   =  |
   * `-----------------------------------------------------------------------------------'
   */
   [_LOWER] = LAYOUT_planck_grid(
     KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_TAB,  KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______,
-    KC_DEL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_PGUP, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, KC_PENT,
-    _______, KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_PGDN, KC_KP_1, KC_KP_2, KC_KP_3, KC_PAST, KC_PSLS,
+    KC_DEL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_LPRN, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, KC_PENT,
+    _______, KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_RPRN, KC_KP_1, KC_KP_2, KC_KP_3, KC_PAST, KC_PSLS,
     _______, _______, _______, _______, _______, _______, _______, KC_PDOT, KC_KP_0, KC_COMM, KC_NO,   KC_EQL
   ),
 
   /* Raise
   * ,-----------------------------------------------------------------------------------.
-  * |  F13 |  F1  |  F2  |  F3  |  F4  |      |   ^  |   &  |   *  |   [  |   ]  |      |
+  * |  F13 |  F1  |  F2  |  F3  |  F4  |      |   ^  |   &  |   *  |   {  |   }  |      |
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Del  |  F5  |  F6  |  F7  |  F8  |      | Home |   _  |   -  |   (  |   )  |      |
+  * | Del  |  F5  |  F6  |  F7  |  F8  | PgUp | Home |   _  |   -  |   [  |   ]  |      |
   * |------+------+------+------+------+------|------+------+------+------+------+------|
-  * |      |  F9  |  F10 |  F11 |  F12 |      | End  |Macro1|Macro2|Macro3|Macro4|   \  |
+  * |      |  F9  |  F10 |  F11 |  F12 | PgDn | End  |Macro1|Macro2|Macro3|Macro4|   \  |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
   * |      |      |      |      |      |             |      |PrtScr| Prev | Next | Play |
   * `-----------------------------------------------------------------------------------'
   */
   [_RAISE] = LAYOUT_planck_grid(
-    KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_NO,   KC_CIRC, KC_AMPR, KC_ASTR, KC_LBRC, KC_RBRC, _______,
-    KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_NO,   KC_HOME, KC_UNDS, KC_MINS, KC_LPRN, KC_RPRN, _______,
-    _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_NO,   KC_END,  MACRO_0, MACRO_1, MACRO_2, MACRO_3, KC_BSLS,
+    KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_NO,   KC_CIRC, KC_AMPR, KC_ASTR, KC_LCBR, KC_RCBR, _______,
+    KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_PGUP, KC_HOME, KC_UNDS, KC_MINS, KC_LBRC, KC_RBRC, _______,
+    _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_PGDN, KC_END,  MACRO_0, MACRO_1, MACRO_2, MACRO_3, KC_BSLS,
     _______, _______, _______, _______, _______, _______, KC_NO,   _______, KC_PSCR, KC_MPRV, KC_MNXT, KC_MPLY
   ),
 
@@ -272,13 +272,13 @@ void adjust_colors(void) {
 
     for (uint8_t i=0; i < 47; i++) {
         // macros
-        if (i==0 || i==4) {
+        if (i==4) {
             HSV hsv = {41, layer_sat, layer_val};
             RGB rgb = hsv_to_rgb(hsv);
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
         // operation keys
-        if (i==8 || i==11 || i==12 || \
+        if (i==0 || i==8 || i==11 || i==12 || \
             (i>=15 && i<=18) || \
             (i>=27 && i<=29) || \
             i==35 || i==38 || i==44) {
@@ -349,7 +349,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                     }
                     // operation keys
-                    if (i==6 || i==12 || i==18 || i==30) {
+                    if (i==0 || i==6 || i==12) {
                         HSV hsv = {247, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
@@ -372,7 +372,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
                     }
 
                     // numpad operations
-                    if (i==10 || i==22 || i==34 || i==35 || i==46) {
+                    if (i==6 || i==10 || i==18 || i==22 || i==30 || i==34 || i==35 || i==46) {
                         HSV hsv = {95, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
@@ -382,8 +382,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
             case _RAISE:
                 for (uint8_t i=0; i < 48; i++) {
                     // special characters
-                    if (i==0 || \
-                        (i>=6 && i<=10) || \
+                    if ((i>=6 && i<=10) || \
                         (i>=19 && i<=22) || \
                         i==35) {
                         HSV hsv = {195, layer_sat, layer_val};
@@ -399,7 +398,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                     }
                     // operation keys
-                    if (i==12 || i==18 || i==30 || i>=43) {
+                    if (i==0 || i==12 || i==17 || i==18 || i==29 || i==30 || i>=43) {
                         HSV hsv = {247, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
