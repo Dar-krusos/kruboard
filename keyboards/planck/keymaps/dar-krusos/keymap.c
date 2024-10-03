@@ -13,12 +13,12 @@ enum planck_keycodes {
   DVORAK = SAFE_RANGE,
   LO_SWCH,
   DSKTOP,
-  MACRO_0,
   MACRO_1,
   MACRO_2,
   MACRO_3,
-  SONG_1,
   MACRO_4,
+  MACRO_5,
+  SONG_1,
   RGB_SAT,
   RGB_VAL,
   RGB_TYP
@@ -53,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
     KC_TAB,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_ENTER,
     KC_LSFT, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_SLASH,
-    KC_LCTL, DSKTOP, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
+    KC_LCTL, DSKTOP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
   ),
 
   /* Qwerty
@@ -70,8 +70,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_QWERTY] = LAYOUT_planck_grid(
     KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_ENTER,
-    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_QUOT, KC_SLASH,
-    KC_LCTL, DSKTOP, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
+    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_QUOT,
+    KC_LCTL, DSKTOP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
   ),
 
   /* Lower
@@ -106,7 +106,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_RAISE] = LAYOUT_planck_grid(
     KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_NO,   KC_CIRC, KC_AMPR, KC_ASTR, KC_LCBR, KC_RCBR, _______,
     KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_PGUP, KC_HOME, KC_UNDS, KC_MINS, KC_LBRC, KC_RBRC, _______,
-    _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_PGDN, KC_END,  MACRO_0, MACRO_1, MACRO_2, MACRO_3, KC_BSLS,
+    _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_PGDN, KC_END,  MACRO_1, MACRO_2, MACRO_3, MACRO_4, KC_BSLS,
     _______, _______, _______, _______, _______, _______, KC_NO,   _______, KC_PSCR, KC_MPRV, KC_MNXT, KC_MPLY
   ),
 
@@ -122,9 +122,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * `-----------------------------------------------------------------------------------'
   */
   [_ADJUST] = LAYOUT_planck_grid(
-    DISABLE, KC_NO,   KC_NO,   KC_NO,   SONG_1, KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
+    DISABLE, KC_NO,   KC_NO,   KC_NO,   SONG_1,  KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
     KC_CAPS, KC_NO,   KC_NO,   KC_VOLD, KC_VOLU, MU_TOGG, KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-    _______, KC_NO,   KC_NO,   RGB_SAT, RGB_VAL, MACRO_4, RGB_TYP, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
+    _______, KC_NO,   KC_NO,   RGB_SAT, RGB_VAL, MACRO_5, RGB_TYP, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
     KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_BOOT, KC_NO,   KC_NO
   ),
 
@@ -343,13 +343,13 @@ layer_state_t layer_state_set_user(layer_state_t state) {
             case _LOWER:
                 for (uint8_t i=0; i < 48; i++) {
                     // special characters
-                    if (i>=0 && i<=5) {
+                    if (i>=1 && i<=5) {
                         HSV hsv = {195, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                     }
                     // operation keys
-                    if (i==0 || i==6 || i==12) {
+                    if (i==0 || i==12) {
                         HSV hsv = {247, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
@@ -450,23 +450,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed)
         SEND_STRING(SS_LGUI(SS_TAP(X_D)));
       break;
-    case MACRO_0:
+    case MACRO_1:
       if (record->event.pressed)
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_M)))));
       break;
-    case MACRO_1:
+    case MACRO_2:
       if (record->event.pressed)
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_W)))));
       break;
-    case MACRO_2:
+    case MACRO_3:
       if (record->event.pressed)
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_V)))));
       break;
-    case MACRO_3:
+    case MACRO_4:
       if (record->event.pressed)
         SEND_STRING(SS_LALT(SS_LCTL(SS_LSFT(SS_TAP(X_Z)))));
       break;
-    case MACRO_4:
+    case MACRO_5:
       if (record->event.pressed) {
         rgb_on = !rgb_on;
         if (!rgb_on) {
