@@ -1,5 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "eeprom.h"
+#include "transactions.h"
 
 enum layers {
     _DVORAK = 0,
@@ -20,6 +21,10 @@ enum custom_keycodes {
   MACRO_3,
   MACRO_4,
   MACRO_5,
+  MACRO_6,
+  MACRO_7,
+  MACRO_8,
+  MACRO_9,
   RGB_SAT,
   RGB_VAL,
   RGB_TYP
@@ -80,20 +85,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Lower
  *
  * ,-----------------------------------------.                              ,-----------------------------------------.
- * |   `  |      |      |Macro1|      |      |                              |  Tab |   7  |   8  |   9  |   *  |      |
+ * |   `  |Alt+D |      |AltF4 |      |      |                              |  Tab |   7  |   8  |   9  |   *  |      |
  * |------+------+------+------+------+------|                              |------+------+------+------+------+------|
  * | Del  |   1  |   2  |   3  |   4  |   5  |                              |   (  |   4  |   5  |   6  |   -  |      |
  * |------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+------|
  * |      |   6  |   7  |   8  |   9  |   0  |      |      |  |      |      |   )  |   1  |   2  |   3  |   +  |   /  |
  * `--------------------+------+------+------+------+------|  |------+------+------+------+------+--------------------'
- *                      |      |      |      |      |      |  | Space|   ,  |   0  |   .  |   =  |
+ *                      |      |      |      |      |      |  |   =  |   .  |   0  | SPACE|      |
  *                      `----------------------------------'  `----------------------------------'
 */
     [_LOWER] = LAYOUT(
-     KC_GRV,  KC_NO,   KC_NO,   ALTF4,  KC_NO,   KC_NO,                                           KC_TAB,  KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______,
+     KC_GRV, LALT(KC_D), _______, ALTF4, KC_NO,   KC_NO,                                          KC_TAB,  KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______,
      KC_DEL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                                           KC_LPRN, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, KC_PENT,
-     _______, KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______, _______,    KC_NO,   KC_NO,   KC_RPRN, KC_KP_1, KC_KP_2, KC_KP_3, KC_PAST, KC_PSLS,
-                                _______, _______, _______, _______, _______,    KC_SPC,  KC_COMM, KC_KP_0, KC_PDOT, KC_EQL
+     _______, KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_NO,   KC_NO,      KC_NO,   KC_NO,   KC_RPRN, KC_KP_1, KC_KP_2, KC_KP_3, KC_PAST, KC_PSLS,
+                                _______, _______, _______, _______, _______,    KC_EQL,  KC_PDOT, KC_KP_0, KC_SPC,  KC_NO
     ),
 
 /*
@@ -112,8 +117,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_RAISE] = LAYOUT(
      KC_F13,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                                        KC_CIRC, KC_AMPR, KC_ASTR, KC_LCBR, KC_RCBR, _______,
      KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                          KC_HOME, KC_UNDS, KC_MINS, KC_LBRC, KC_RBRC, _______,
-     _______, KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  _______, _______,    _______, _______, KC_END,  MACRO_1, MACRO_2, MACRO_3, MACRO_4, KC_BSLS,
-                                KC_F11,  KC_F12,  KC_PGUP, _______, KC_PGDN,    KC_PSCR, KC_MPRV, _______, KC_MNXT, KC_MPLY
+     _______, KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_NO,   KC_NO,      KC_NO,   KC_NO,   KC_END,  MACRO_1, MACRO_2, MACRO_3, MACRO_4, KC_BSLS,
+                                KC_F11,  KC_F12,  KC_PGUP, _______, KC_PGDN,    KC_PSCR, KC_MPRV, KC_NO,   KC_MNXT, KC_MPLY
     ),
 
 /*
@@ -122,9 +127,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------.                              ,-----------------------------------------.
  * |Disabl|      |      |      |      |      |                              |      |      |Layout|      |      | Sleep|
  * |------+------+------+------+------+------|                              |------+------+------+------+------+------|
- * |      |RGBSat|RGBVal|RGBTog|RGBTyp|      |                              |      |AudTog|      |      |      |      |
+ * |      |RGBSat|RGBVal|RGBTog|RGBTyp|      |                              |      |OSMUTE|      |      |      |      |
  * |------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |  |      |      |      |      |      |      |      |NUMLCK|
+ * |      |      |      |      |      |      |      |      |  |      |      |      |Macro6|Macro7|Macro8|Macro9|NUMLCK|
  * `--------------------+------+------+------+------+------+  |------+------+------+------+------+--------------------'
  *                      |      |      |      |      |      |  |      |      |      |      |      |
  *                      `----------------------------------'  `----------------------------------'
@@ -132,7 +137,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_ADJUST] = LAYOUT(
      DISABLE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                                          KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_SLEP,
      KC_NO,   RGB_SAT, RGB_VAL, MACRO_5, RGB_TYP, KC_NO,                                          KC_NO,   KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,
-     _______, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,      KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
+     _______, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,      KC_NO,   KC_NO,   KC_NO,   MACRO_6, MACRO_7, MACRO_8, MACRO_9, KC_NUM,
                                 KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,      KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO
     ),
 
@@ -177,45 +182,88 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     ),
 };
 
+// Variables
 extern rgb_config_t rgb_matrix_config;
 
-static bool startup_state = true;
-static bool rgb_on = true;
-static bool mute = false;
-static uint8_t layer_sat = 255;
-static uint8_t layer_val = 255;
+static bool startup_state = 0;
+static bool mute = 0;
+static bool rgb_off = 0;
+static uint8_t layer_sat = 0;
+static uint8_t layer_val = 0;
 static uint32_t startup_timer = 0;
 
+// Custom EEPROM config
 typedef union {
   uint32_t raw;
   struct {
-    uint8_t reactive_mode :4;
+    uint8_t reactive_mode :3;
     // uint8_t sat_falloff :2;
   };
 } user_config_t;
 
 user_config_t user_config;
 
-void keyboard_post_init_user(void) {
-    user_config.raw = eeconfig_read_user();
-    rgb_matrix_enable();
-    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_STARTUP);
-    debug_enable=true;
-}
-
-void eeconfig_init_user(void) {
+void eeconfig_init_user(void) { // Default config on EEPROM clear
     user_config.raw = 0;
     user_config.reactive_mode = 0;
     // user_config.sat_falloff = 1;
     eeconfig_update_user(user_config.raw);
 }
 
-void clear_rgb(void) {
-    for (uint8_t i = 0; i < 61; i++) {
-        rgb_matrix_set_color(i, 0, 0, 0);
+// Sync between split
+typedef struct _master_to_slave_t {
+    bool startup_state :1;
+    bool mute :1;
+    bool rgb_off :1;
+    uint8_t reactive_mode :3;
+    uint8_t layer_sat :8;
+    uint8_t layer_val :8;
+} master_to_slave_t;
+
+master_to_slave_t sync_states;
+void sync_states_slave_handler(uint8_t initiator2target_buffer_size, const void* initiator2target_buffer,
+                      uint8_t target2initiator_buffer_size, void* target2initiator_buffer) {
+    if (initiator2target_buffer_size == sizeof(master_to_slave_t)) {
+        memcpy(&sync_states, initiator2target_buffer, initiator2target_buffer_size);
     }
 }
 
+void housekeeping_task_user(void) {
+    if (is_keyboard_master()) {
+        static uint32_t last_sync = 0;
+        if (timer_elapsed32(last_sync) > 100) {
+            master_to_slave_t m2s = {startup_state, mute, rgb_off, user_config.reactive_mode, layer_sat, layer_val};
+            if(transaction_rpc_send(SYNC_STATES, sizeof(master_to_slave_t), &m2s)) {
+                last_sync = timer_read32();
+            } else {
+                dprint("Slave sync failed!\n");
+            }
+        }
+    } else { // slave side
+        if (sync_states.startup_state)
+            startup_state = 1;
+        else startup_state = 0;
+        if (sync_states.mute)
+            mute = 1;
+        else mute = 0;
+        if (sync_states.rgb_off)
+            rgb_off = 1;
+        else rgb_off = 0;
+        user_config.reactive_mode = sync_states.reactive_mode;
+        layer_sat = sync_states.layer_sat;
+        layer_val = sync_states.layer_val;
+    }
+}
+
+// Initialisation
+void keyboard_post_init_user(void) {
+    user_config.raw = eeconfig_read_user();
+    rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_STARTUP);
+    transaction_register_rpc(SYNC_STATES, sync_states_slave_handler);
+    debug_enable=true;
+}
+
+// Custom functions
 void set_sat_val(void) {
     switch (user_config.reactive_mode) {
         case 2:
@@ -229,7 +277,8 @@ void set_sat_val(void) {
             break;
     }
 }
-void set_to_reactive(void) {
+
+void set_mode_to_reactive(void) {
     // TO DO
     // switch (user_config.reactive_mode) {
     //     case 0:
@@ -267,7 +316,7 @@ void set_to_reactive(void) {
     }
 }
 
-void adjust_colors(void) {
+void set_mode_to_adjust(void) {
     set_sat_val();
     switch (user_config.reactive_mode) { // set reactive preview animation
         case 0:
@@ -289,71 +338,94 @@ void adjust_colors(void) {
             rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_FLASHING);
             break;
     }
-
-    for (uint8_t i = 0; i < 61; i++) {
-        // operation keys
-        if ((i>=20 && i<=23) || \
-            i==30 || i==49 || i==58 || i==61) {
-            HSV hsv = {247, layer_sat, layer_val};
-            RGB rgb = hsv_to_rgb(hsv);
-            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-        }
-        // mute
-        if (i==51) {
-            if (!mute) {
-                HSV hsv = {247, layer_sat, layer_val};
-                RGB rgb = hsv_to_rgb(hsv);
-                rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-            } else {
-                HSV hsv = {166, layer_sat, layer_val};
-                RGB rgb = hsv_to_rgb(hsv);
-                rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
-            }
-        }
-    }
 }
 
 void startup(void) {
+    set_mode_to_reactive();
+    startup_state = 1;
     rgb_matrix_set_speed_noeeprom(60);
-    set_to_reactive();
-    startup_state = false;
+
+    // Sync variables
+    if (is_keyboard_master()) {
+        master_to_slave_t m2s = {startup_state, mute, rgb_off, user_config.reactive_mode, layer_sat, layer_val};
+        if(!transaction_rpc_send(SYNC_STATES, sizeof(master_to_slave_t), &m2s)) {
+            dprint("Slave sync failed!\n");
+        }
+    } else { // slave side
+        if (sync_states.startup_state)
+            startup_state = 1;
+        else startup_state = 0;
+        if (sync_states.mute)
+            mute = 1;
+        else mute = 0;
+        if (sync_states.rgb_off)
+            rgb_off = 1;
+        else rgb_off = 0;
+        user_config.reactive_mode = sync_states.reactive_mode;
+        layer_sat = sync_states.layer_sat;
+        layer_val = sync_states.layer_val;
+    }
 }
 
+// Event functions
 layer_state_t layer_state_set_user(layer_state_t state) {
     state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+
+    if (rgb_off == 0) {
+        switch (get_highest_layer(state)) {
+            case _LOWER:
+            case _RAISE:
+                switch (user_config.reactive_mode) {
+                    case 4:
+                        rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_LOWER_RAISE_WHITE);
+                        break;
+                    default:
+                        rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_LOWER_RAISE);
+                        break;
+                }
+                break;
+            case _ADJUST:
+                set_mode_to_adjust();
+                break;
+            default:
+                if (startup_state == 1 && rgb_off == 0)
+                    set_mode_to_reactive();
+                break;
+        }
+    }
+
     return state;
 }
 
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (rgb_on) {
-        // clear_rgb();
+    if (rgb_off == 0) {
         switch (get_highest_layer(layer_state)) {
             case _LOWER:
                 for (uint8_t i = led_min; i < led_max; i++) {
                     // operation keys
-                    if (i==30 || i==24) {
+                    if (i==24 || i==27 || i==30) {
                         HSV hsv = {247, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                     }
                     // numbers
-                    if ((i<=23 && i>=19) || \
-                        (i<= 17 && i>=13)) {
+                    if ((i>=13 && i<=17) || \
+                        (i>=19 && i<=23)) {
                         HSV hsv = {15, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                     }
                     // numpad operations
-                    if (i==56 || i==60 || i==50 || i==54 || i==44 || i==48 || i==49 || i==41) {
+                    if (i==28 || i==37 || i==40 || i==44 || i==48 || i==49 || i==50 || i==54 || i==56 || i==60) {
                         HSV hsv = {95, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                     }
                     // numpad numbers
-                    if ((i>=57 && i<=59) || \
-                        (i>=51 && i<=53) || \
+                    if ((i>=38 && i<=39) || \
                         (i>=45 && i<=47) || \
-                        (i>=38 && i<=40)) {
+                        (i>=51 && i<=53) || \
+                        (i>=57 && i<=59)) {
                         HSV hsv = {161, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
@@ -364,7 +436,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                 for (uint8_t i = led_min; i < led_max; i++) {
                     // special characters
                     if ((i>=25 && i<=30) || \
-                        i==35 || \
                         i==49 || \
                         (i>=51 && i<=54) || \
                         (i>=56 && i<=60)) {
@@ -395,37 +466,27 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                 }
                 break;
             case _ADJUST:
-                set_sat_val();
-                // switch (user_config.reactive_mode) { // set reactive preview animation
-                //     case 0:
-                //         rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE);
-                //         break;
-                //     case 1:
-                //         rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_SAT_FADE);
-                //         break;
-                //     case 2:
-                //         rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL);
-                //         break;
-                //     case 3:
-                //         rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_PASTEL_BRIGHT);
-                //         break;
-                //     case 4:
-                //         rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_WHITE);
-                //         break;
-                //     case 5:
-                //         rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PREVIEW_REACTIVE_FLASHING);
-                //         break;
-                // }
-
                 for (uint8_t i = led_min; i < led_max; i++) {
                     // operation keys
-                    if ((i>=20 && i<=23) || \
-                        i==30 || i==49 || i==58 || i==61) {
+                    if ((i>=21 && i<=23) || \
+                        i==30 || i==61) {
                         HSV hsv = {247, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                     }
-                    // mute
+                    // macros
+                    if (i>=45 && i<=48) {
+                        HSV hsv = {41, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // numpad operations
+                    if (i==49) {
+                        HSV hsv = {95, layer_sat, layer_val};
+                        RGB rgb = hsv_to_rgb(hsv);
+                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                    }
+                    // OS mute
                     if (i==51) {
                         if (!mute) {
                             HSV hsv = {247, layer_sat, layer_val};
@@ -437,32 +498,44 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                         }
                     }
+                    // Layout
+                    if (i==58) {
+                        if (layer_state_cmp(default_layer_state, _DVORAK)) {
+                            HSV hsv = {247, layer_sat, layer_val};
+                            RGB rgb = hsv_to_rgb(hsv);
+                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        } else {
+                            HSV hsv = {175, layer_sat, layer_val};
+                            RGB rgb = hsv_to_rgb(hsv);
+                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        }
+                    }
                 }
+                break;
+            default:
+                if (startup_state == 1)
+                    for (uint8_t i = led_min; i < led_max; i++) {
+                        // underglow
+                        if ((i>=0 && i<=5) || \
+                            (i>=31 && i<=36)) {
+                            HSV hsv = {251, layer_sat, layer_val};
+                            RGB rgb = hsv_to_rgb(hsv);
+                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        }
+                    }
+                break;
+        }
+    } else if (rgb_off == 1) {
+        switch (get_highest_layer(layer_state)) {
+            case _ADJUST:
+                HSV hsv = {247, layer_sat, layer_val*.5};
+                RGB rgb = hsv_to_rgb(hsv);
+                rgb_matrix_set_color(21, rgb.r, rgb.g, rgb.b);
                 break;
             default:
                 break;
         }
-    } else if (!rgb_on && layer_state_cmp(layer_state, _ADJUST)) {
-        HSV hsv = {247, layer_sat, layer_val};
-        RGB rgb = hsv_to_rgb(hsv);
-        rgb_matrix_set_color(29, rgb.r, rgb.g, rgb.b); // set SONG_1 color
     }
-
-    // for (uint8_t i = led_min; i < led_max; i++) {
-    //     switch(get_highest_layer(layer_state|default_layer_state)) {
-    //         case 2:
-    //             rgb_matrix_set_color(i, RGB_BLUE);
-    //             break;
-    //         case 3:
-    //             rgb_matrix_set_color(i, RGB_YELLOW);
-    //             break;
-    //         case 4:
-    //             rgb_matrix_set_color(i, RGB_GREEN);
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
     return false;
 }
 
@@ -470,7 +543,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case KC_ESCAPE:
       if (record->event.pressed) {
-        if (startup_state == true) {
+        if (startup_state == 0) {
             startup();
             return false;
         }
@@ -509,35 +582,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
     case MACRO_5:
       if (record->event.pressed) {
-        rgb_on = !rgb_on;
-        if (!rgb_on) {
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
-            clear_rgb();
-
-            HSV hsv = {247, layer_sat, layer_val};
-            RGB rgb = hsv_to_rgb(hsv);
-            rgb_matrix_set_color(29, rgb.r, rgb.g, rgb.b); // set SONG_1 color
-        } else
-            adjust_colors();
+        rgb_off = !rgb_off;
+        if (rgb_off) rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
+        else set_mode_to_adjust();
       }
+      break;
+    case MACRO_6:
+      if (record->event.pressed)
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_5))));
+      break;
+    case MACRO_7:
+      if (record->event.pressed)
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_6))));
+      break;
+    case MACRO_8:
+      if (record->event.pressed)
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_7))));
+      break;
+    case MACRO_9:
+      if (record->event.pressed)
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_8))));
       break;
     case DISABLE:
       if (record->event.pressed) {
-        rgblight_toggle_noeeprom();
+        rgb_matrix_toggle_noeeprom();
       }
       break;
     case KC_MUTE:
       if (record->event.pressed) {
         mute = !mute;
-        if (!mute) {
-            HSV hsv = {247, layer_sat, layer_val};
-            RGB rgb = hsv_to_rgb(hsv);
-            rgb_matrix_set_color(18, rgb.r, rgb.g, rgb.b);
-        } else {
-            HSV hsv = {166, layer_sat, layer_val};
-            RGB rgb = hsv_to_rgb(hsv);
-            rgb_matrix_set_color(18, rgb.r, rgb.g, rgb.b);
-        }
       }
       break;
     case RGB_SAT:
@@ -546,7 +619,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 rgb_matrix_decrease_sat();
             else
                 rgb_matrix_increase_sat();
-            adjust_colors();
+            set_mode_to_adjust();
         }
         break;
     case RGB_VAL:
@@ -555,7 +628,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 rgb_matrix_decrease_val();
             else
                 rgb_matrix_increase_val();
-            adjust_colors();
+            set_mode_to_adjust();
         }
         break;
     case RGB_TYP:
@@ -565,11 +638,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 user_config.reactive_mode = 0;
 
             eeconfig_update_user(user_config.raw);
-            adjust_colors();
+            set_mode_to_adjust();
         }
         break;
     default:
-      if (startup_state == true)
+      if (startup_state == 0)
         return false;
       break;
   }
@@ -577,6 +650,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 void matrix_scan_user(void) {
-    if (startup_state == true && timer_elapsed32(startup_timer) > 4600 && timer_elapsed32(startup_timer) < 4700)
+    if (startup_state == 0 && timer_elapsed32(startup_timer) > 4600 && timer_elapsed32(startup_timer) < 4700) {
         startup();
+    }
 }

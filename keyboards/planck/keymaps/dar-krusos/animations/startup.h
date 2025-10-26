@@ -128,7 +128,7 @@ bool startup_effect_runner(effect_params_t* params, dx_dy_i_f effect_func) {
         rgb_matrix_set_color_all(0, 0, 0);
     }
 
-    return led_max < RGB_MATRIX_LED_COUNT;
+    return rgb_matrix_check_finished_leds(led_max);
 }
 
 static HSV STARTUP_math(HSV hsv, int16_t dx, int16_t dy, uint8_t i, uint8_t time, uint16_t offset, uint8_t mode) {

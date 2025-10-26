@@ -1,7 +1,6 @@
 #ifdef RGB_MATRIX_KEYREACTIVE_ENABLED
-#   ifndef DISABLE_RGB_MATRIX_ADJUST_PREVIEW_REACTIVE
 RGB_MATRIX_EFFECT(ADJUST_PREVIEW_REACTIVE)
-#       ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
+#   ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
 bool adjust_preview_reactive_runner(effect_params_t* params) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
@@ -27,6 +26,5 @@ bool adjust_preview_reactive_runner(effect_params_t* params) {
     bool ADJUST_PREVIEW_REACTIVE(effect_params_t* params) { return adjust_preview_reactive_runner(params); }
 
 
-#       endif  // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
-#   endif      // DISABLE_RGB_MATRIX_ADJUST_PREVIEW_REACTIVE
-#endif          // RGB_MATRIX_KEYREACTIVE_ENABLED
+#    endif // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
+#endif     // RGB_MATRIX_KEYREACTIVE_ENABLED
