@@ -23,7 +23,7 @@ bool reactive_flashing_anim_runner(effect_params_t* params, reactive_f effect_fu
         RGB      rgb    = rgb_matrix_hsv_to_rgb(effect_func(hsv, offset));
         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
     }
-    return led_max < RGB_MATRIX_LED_COUNT;
+    return rgb_matrix_check_finished_leds(led_max);
 }
 
 static HSV REACTIVE_FLASHING_math(HSV hsv, uint16_t offset) {

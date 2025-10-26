@@ -1,5 +1,4 @@
 #include "animations\startup.h"
-#include "animations\blank.h"
 #include "animations\reactive.h"
 #include "animations\reactive_sat_fade.h"
 #include "animations\reactive_pastel.h"
@@ -12,3 +11,6 @@
 #include "animations\preview_reactive_pastel_bright.h"
 #include "animations\preview_reactive_white.h"
 #include "animations\preview_reactive_flashing.h"
+#include "animations\lower_raise.h"
+#include "animations\lower_raise_white.h"
+#include "animations\blank.h"

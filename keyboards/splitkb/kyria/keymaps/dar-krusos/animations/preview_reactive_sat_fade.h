@@ -1,26 +1,48 @@
 #ifdef RGB_MATRIX_KEYREACTIVE_ENABLED
-#   ifndef DISABLE_RGB_MATRIX_PREVIEW_REACTIVE_SAT_FADE
 RGB_MATRIX_EFFECT(PREVIEW_REACTIVE_SAT_FADE)
-#       ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
+#   ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
 bool preview_reactive_sat_fade_runner(effect_params_t* params) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
+    uint8_t time = scale16by8(g_rgb_timer, rgb_matrix_config.speed * 4);
 
-    static uint8_t hue;
-    static bool change = 0;
-    uint8_t offset = rgb_matrix_config.hsv.s - powf((float)(scale16by8(g_rgb_timer, rgb_matrix_config.speed)%255)/125,10);
-    uint8_t offset_v = rgb_matrix_config.hsv.v - powf((float)(scale16by8(g_rgb_timer, rgb_matrix_config.speed)%255)/125,10);
+    for (uint8_t i = led_min; i < led_max; i++) {
+        if (i == 20) { // led number = 20
+            static uint8_t hue;
+            static bool change = 0;
+            uint16_t offset = powf((float)scale16by8((int)(g_rgb_timer*.8)%1070, qadd8(rgb_matrix_config.speed, 1))/145,10);
+            uint8_t sat = scale8(255 - offset, rgb_matrix_config.hsv.s);
+            uint8_t val = scale8(255 - offset, rgb_matrix_config.hsv.v);
 
-    if (change == 0 && offset <= 0) {
-        change = 1;
-        hue = random8();
+            if (change == 0 && offset == 0) {
+                change = 1;
+                hue = random8();
+            }
+            if (change == 1 && offset > 0)
+                change = 0;
+
+            HSV hsv = {hue, sat, val};
+            RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
+            rgb_matrix_set_color(20, rgb.r, rgb.g, rgb.b); // led number = 20
+        } else if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_UNDERGLOW)) {
+            int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
+            int16_t dy  = g_led_config.point[i].y - k_rgb_matrix_center.y;
+            HSV hsv = {0, 0, rgb_matrix_config.hsv.v};
+
+            if (i < 31) { // left half
+                // TO-DO sync left and right phase
+                hsv.v = scale8(hsv.v - time + atan2_8(dy, dx) * 3, hsv.v / 2);
+                // hsv.v = scale8(time - atan2_8(dy, dx) * 3, hsv.v / 2);
+            }
+            if (i >= 31) { // right half
+                hsv.v = scale8(hsv.v - time - atan2_8(dy, dx) * 3, hsv.v / 2);
+            }
+
+            RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
+            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+        } else
+            rgb_matrix_set_color(i, 0, 0, 0);
     }
-    if (change == 1 && offset > 0)
-        change = 0;
-
-    HSV hsv = {hue, offset, offset_v};
-    RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
-    rgb_matrix_set_color(20, rgb.r, rgb.g, rgb.b); // led number = 20
 
     return rgb_matrix_check_finished_leds(led_max);
 }
@@ -28,6 +50,5 @@ bool preview_reactive_sat_fade_runner(effect_params_t* params) {
 bool PREVIEW_REACTIVE_SAT_FADE(effect_params_t* params) { return preview_reactive_sat_fade_runner(params); }
 
 
-#       endif  // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
-#   endif      // DISABLE_RGB_MATRIX_PREVIEW_REACTIVE_SAT_FADE
-#endif          // RGB_MATRIX_KEYREACTIVE_ENABLED
+#    endif // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
+#endif     // RGB_MATRIX_KEYREACTIVE_ENABLED

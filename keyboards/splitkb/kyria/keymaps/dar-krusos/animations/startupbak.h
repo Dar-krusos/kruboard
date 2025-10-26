@@ -162,5 +162,5 @@ static HSV STARTUP_math(HSV hsv, int16_t dx, int16_t dy, uint8_t i, uint8_t time
 
 bool STARTUP(effect_params_t* params) { return startup_effect_runner(params, &STARTUP_math); }
 
-#    endif  // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
+#    endif // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 #endif      // DISABLE_RGB_MATRIX_STARTUP
