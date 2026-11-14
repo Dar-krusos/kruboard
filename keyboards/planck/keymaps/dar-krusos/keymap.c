@@ -5,7 +5,7 @@
 
 #include QMK_KEYBOARD_H
 #ifdef AUDIO_ENABLE
-#include "muse.h"
+    #include "muse.h"
 #endif
 #include "eeprom.h"
 
@@ -46,14 +46,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * |------+------+------+------+------+------|------+------+------+------+------+------|
   * | Shift|   ;  |   Q  |   J  |   K  |   X  |   B  |   M  |   W  |   V  |   Z  |  /   |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * | Ctrl |Win+D | GUI  | Alt  |Lower |    Space    |Raise | Left |  Up  | Down |Right |
+  * | Alt |Win+D | GUI  | Ctrl  |Lower |    Space    |Raise | Left |  Up  | Down |Right |
   * `-----------------------------------------------------------------------------------'
   */
   [_DVORAK] = LAYOUT_planck_grid(
     KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
     KC_TAB,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_ENTER,
     KC_LSFT, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_SLASH,
-    KC_LCTL, DSKTOP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
+    KC_LALT, DSKTOP,  KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
   ),
 
   /* Qwerty
@@ -64,14 +64,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * |------+------+------+------+------+------|------+------+------+------+------+------|
   * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |  "   |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * | Ctrl |Win+D | GUI  | Alt  |Lower |    Space    |Raise | Left |  Up  | Down |Right |
+  * | Alt |Win+D | GUI  | Ctrl  |Lower |    Space    |Raise | Left |  Up  | Down |Right |
   * `-----------------------------------------------------------------------------------'
   */
   [_QWERTY] = LAYOUT_planck_grid(
     KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_ENTER,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_QUOT,
-    KC_LCTL, DSKTOP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
+    KC_LALT, DSKTOP,  KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
   ),
 
   /* Lower
