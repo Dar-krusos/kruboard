@@ -350,7 +350,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
                     }
                     // operation keys
-                    if (i==0 || i==12) {
+                    if (i==0 || i == 5 || i==12) {
                         HSV hsv = {247, layer_sat, layer_val};
                         RGB rgb = hsv_to_rgb(hsv);
                         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
@@ -383,7 +383,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
             case _RAISE:
                 for (uint8_t i=0; i < 48; i++) {
                     // special characters
-                    if ((i>=6 && i<=10) || \
+                    if ((i>=5 && i<=10) || \
                         (i>=19 && i<=22) || \
                         i==35) {
                         HSV hsv = {195, layer_sat, layer_val};
