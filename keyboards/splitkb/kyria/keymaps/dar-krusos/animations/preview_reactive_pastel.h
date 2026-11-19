@@ -7,7 +7,7 @@ bool preview_reactive_pastel_runner(effect_params_t* params) {
     uint8_t time = scale16by8(g_rgb_timer, rgb_matrix_config.speed * 4);
 
     for (uint8_t i = led_min; i < led_max; i++) {
-        if (i == 20) { // led number = 20
+        if (i == PREVIEW_KEY) {
             static uint8_t hue;
             static bool change = 0;
             uint16_t offset = scale16by8(g_rgb_timer, rgb_matrix_config.speed);
@@ -23,7 +23,7 @@ bool preview_reactive_pastel_runner(effect_params_t* params) {
 
             HSV hsv = {hue, sat, val};
             RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
-            rgb_matrix_set_color(20, rgb.r, rgb.g, rgb.b); // led number = 20
+            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         } else if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_UNDERGLOW)) {
             int16_t dx  = g_led_config.point[i].x - k_rgb_matrix_center.x;
             int16_t dy  = g_led_config.point[i].y - k_rgb_matrix_center.y;

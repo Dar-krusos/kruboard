@@ -19,7 +19,7 @@ bool preview_reactive_runner(effect_params_t* params) {
 
     HSV hsv = {hue, 255, offset};
     RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
-    rgb_matrix_set_color(30, rgb.r, rgb.g, rgb.b); // led number = 30
+    rgb_matrix_set_color(PREVIEW_KEY, rgb.r, rgb.g, rgb.b); // led number = 30
 
     return rgb_matrix_check_finished_leds(led_max);
 }

@@ -19,6 +19,10 @@ enum planck_keycodes {
   MACRO_3,
   MACRO_4,
   MACRO_5,
+  MACRO_6,
+  MACRO_7,
+  MACRO_8,
+  MACRO_9,
   SONG_1,
   RGB_SAT,
   RGB_VAL,
@@ -115,17 +119,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * ,-----------------------------------------------------------------------------------.
   * |Disabl|      |      |      | Song1|      |LEDlvl|      |Reboot|      |      | Sleep|
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Caps |      |      | Vol- | Vol+ |KBMuse|AudTog|      |      |      |      |      |
+  * | Caps |RGBSat|RGBVal|RGBTog|RGBTyp|KBMuse|AudTog|      |      |      |      |      |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * |      |      |      |RGBSat|RGBVal|RGBTog|RGBTyp|      |      |      |      |NumLck|
+  * |      |      |      |      |      | Vol- | Vol+ |Macro6|Macro7|Macro8|Macro9|NumLck|
   * |------+------+------+------+------+------+------+------+------+------+------+------|
   * |      |      |Layout|      |      |             |      |      |Bootld|      |      |
   * `-----------------------------------------------------------------------------------'
   */
   [_ADJUST] = LAYOUT_planck_grid(
     DISABLE, KC_NO,   KC_NO,   KC_NO,   SONG_1,  KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
-    KC_CAPS, KC_NO,   KC_NO,   KC_VOLD, KC_VOLU, MU_TOGG, KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-    _______, KC_NO,   KC_NO,   RGB_SAT, RGB_VAL, MACRO_5, RGB_TYP, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NUM,
+    KC_CAPS, RGB_SAT, RGB_VAL, MACRO_5, RGB_TYP, MU_TOGG, KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+    _______, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_VOLD, KC_VOLU, MACRO_6, MACRO_7, MACRO_8, MACRO_9, KC_NUM,
     KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_BOOT, KC_NO,   KC_NO
   ),
 
@@ -273,16 +277,15 @@ void adjust_colors(void) {
 
     for (uint8_t i=0; i < 47; i++) {
         // macros
-        if (i==4) {
+        if (i==4 || (i>=31 && i<=34)) {
             HSV hsv = {41, layer_sat, layer_val};
             RGB rgb = hsv_to_rgb(hsv);
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
         // operation keys
-        if (i==0 || i==8 || i==11 || i==12 || \
-            (i>=15 && i<=18) || \
-            (i>=27 && i<=29) || \
-            i==35 || i==38 || i==44) {
+        if (i==0 || i==6 || i==8 || \
+            (i>=11 && i<=17) || \
+            i==29 || i==30 || i==35 || i==38 || i==44) {
             HSV hsv = {247, layer_sat, layer_val};
             RGB rgb = hsv_to_rgb(hsv);
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
@@ -486,6 +489,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         } else
             adjust_colors();
       }
+      break;
+    case MACRO_6:
+      if (record->event.pressed)
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_5))));
+      break;
+    case MACRO_7:
+      if (record->event.pressed)
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_6))));
+      break;
+    case MACRO_8:
+      if (record->event.pressed)
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_7))));
+      break;
+    case MACRO_9:
+      if (record->event.pressed)
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_8))));
       break;
     case SONG_1:
       if (record->event.pressed)

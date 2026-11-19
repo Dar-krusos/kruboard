@@ -7,7 +7,7 @@ bool preview_reactive_runner(effect_params_t* params) {
     uint8_t time = scale16by8(g_rgb_timer, rgb_matrix_config.speed * 4);
 
     for (uint8_t i = led_min; i < led_max; i++) {
-        if (i == 20) { // led number = 20
+        if (i == PREVIEW_KEY) {
             static uint8_t hue;
             static bool change = 0;
             uint16_t offset = powf((float)scale16by8((int)(g_rgb_timer*.8)%1070, qadd8(rgb_matrix_config.speed, 1))/145,10);

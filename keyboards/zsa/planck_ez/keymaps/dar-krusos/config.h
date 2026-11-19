@@ -29,6 +29,7 @@
 
 #define RGB_MATRIX_DEFAULT_SPD 120
 #define LED_HITS_TO_REMEMBER 47
+#define PREVIEW_KEY 16
 
 //disable unused rgb effects to decrease firmware size
 #define DISABLE_RGB_MATRIX_ALPHAS_MODS
