@@ -12,7 +12,8 @@
 enum planck_keycodes {
   DVORAK = SAFE_RANGE,
   LO_SWCH,
-  DSKTOP,
+  DESKTOP,
+  ALTF4,
   MACRO_1,
   MACRO_2,
   MACRO_3,
@@ -46,14 +47,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * |------+------+------+------+------+------|------+------+------+------+------+------|
   * | Shift|   ;  |   Q  |   J  |   K  |   X  |   B  |   M  |   W  |   V  |   Z  |  /   |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * | Alt |Win+D | GUI  | Ctrl  |Lower |    Space    |Raise | Left |  Up  | Down |Right |
+  * | Alt  |Win+D | GUI  | Ctrl |Lower |    Space    |Raise | Left |  Up  | Down |Right |
   * `-----------------------------------------------------------------------------------'
   */
   [_DVORAK] = LAYOUT_planck_grid(
     KC_ESC,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
     KC_TAB,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_ENTER,
     KC_LSFT, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_SLASH,
-    KC_LALT, DSKTOP,  KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
+    KC_LALT, DESKTOP,  KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
   ),
 
   /* Qwerty
@@ -64,19 +65,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * |------+------+------+------+------+------|------+------+------+------+------+------|
   * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |  "   |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * | Alt |Win+D | GUI  | Ctrl  |Lower |    Space    |Raise | Left |  Up  | Down |Right |
+  * | Alt  |Win+D | GUI  | Ctrl |Lower |    Space    |Raise | Left |  Up  | Down |Right |
   * `-----------------------------------------------------------------------------------'
   */
   [_QWERTY] = LAYOUT_planck_grid(
     KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_ENTER,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_QUOT,
-    KC_LALT, DSKTOP,  KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
+    KC_LALT, DESKTOP,  KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RIGHT
   ),
 
   /* Lower
   * ,-----------------------------------------------------------------------------------.
-  * |   `  |   !  |   @  |   #  |   $  |   %  | Tab  |   7  |   8  |   9  |   -  |      |
+  * |   `  |   !  |   @  |   #  |   $  |AltF4 | Tab  |   7  |   8  |   9  |   -  |      |
   * |------+------+------+------+------+-------------+------+------+------+------+------|
   * | Del  |   1  |   2  |   3  |   4  |   5  |  (   |   4  |   5  |   6  |   +  |      |
   * |------+------+------+------+------+------|------+------+------+------+------+------|
@@ -86,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * `-----------------------------------------------------------------------------------'
   */
   [_LOWER] = LAYOUT_planck_grid(
-    KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_TAB,  KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______,
+    KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  ALTF4,   KC_TAB,  KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______,
     KC_DEL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_LPRN, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, KC_PENT,
     _______, KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_RPRN, KC_KP_1, KC_KP_2, KC_KP_3, KC_PAST, KC_PSLS,
     _______, _______, _______, _______, _______, _______, _______, KC_PDOT, KC_KP_0, KC_COMM, KC_NO,   KC_EQL
@@ -94,7 +95,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Raise
   * ,-----------------------------------------------------------------------------------.
-  * |  F13 |  F1  |  F2  |  F3  |  F4  |      |   ^  |   &  |   *  |   {  |   }  |      |
+  * |  F13 |  F1  |  F2  |  F3  |  F4  |   %  |   ^  |   &  |   *  |   {  |   }  |      |
   * |------+------+------+------+------+-------------+------+------+------+------+------|
   * | Del  |  F5  |  F6  |  F7  |  F8  | PgUp | Home |   _  |   -  |   [  |   ]  |      |
   * |------+------+------+------+------+------|------+------+------+------+------+------|
@@ -104,7 +105,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * `-----------------------------------------------------------------------------------'
   */
   [_RAISE] = LAYOUT_planck_grid(
-    KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_NO,   KC_CIRC, KC_AMPR, KC_ASTR, KC_LCBR, KC_RCBR, _______,
+    KC_F13,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LCBR, KC_RCBR, _______,
     KC_DEL,  KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_PGUP, KC_HOME, KC_UNDS, KC_MINS, KC_LBRC, KC_RBRC, _______,
     _______, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_PGDN, KC_END,  MACRO_1, MACRO_2, MACRO_3, MACRO_4, KC_BSLS,
     _______, _______, _______, _______, _______, _______, KC_NO,   _______, KC_PSCR, KC_MPRV, KC_MNXT, KC_MPLY
@@ -446,9 +447,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         else default_layer_set(1UL<<_DVORAK);
       }
       break;
-    case DSKTOP:
+    case DESKTOP:
       if (record->event.pressed)
         SEND_STRING(SS_LGUI(SS_TAP(X_D)));
+      break;
+    case ALTF4:
+      if (record->event.pressed)
+        SEND_STRING(SS_LALT(SS_TAP(X_F4)));
       break;
     case MACRO_1:
       if (record->event.pressed)
