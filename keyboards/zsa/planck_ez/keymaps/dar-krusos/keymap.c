@@ -117,20 +117,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Adjust (Lower + Raise)
   * ,-----------------------------------------------------------------------------------.
-  * |Disabl|      |      |      | Song1|      |LEDlvl|      |Reboot|      |      | Sleep|
+  * |Disabl|      |KBMuse|      | Song1|      |      |      |Layout|      |      | Sleep|
   * |------+------+------+------+------+-------------+------+------+------+------+------|
-  * | Caps |RGBSat|RGBVal|RGBTog|RGBTyp|KBMuse|AudTog|      |      |      |      |      |
+  * | Caps |RGBSat|RGBVal|RGBTog|RGBTyp|      |      |OSMUTE|      |      |      |      |
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * |      |      |      |      |      | Vol- | Vol+ |Macro6|Macro7|Macro8|Macro9|NumLck|
+  * |      |LEDlvl|      |      |      | Vol- | Vol+ |Macro6|Macro7|Macro8|Macro9|NumLck|
   * |------+------+------+------+------+------+------+------+------+------+------+------|
-  * |      |      |Layout|      |      |             |      |      |Bootld|      |      |
+  * |      |      |Reboot|      |      |             |      |      |Bootld|      |      |
   * `-----------------------------------------------------------------------------------'
   */
   [_ADJUST] = LAYOUT_planck_grid(
-    DISABLE, KC_NO,   KC_NO,   KC_NO,   SONG_1,  KC_NO, LED_LEVEL, KC_NO,   QK_RBT,  KC_NO,   KC_NO,   KC_SLEP,
-    KC_CAPS, RGB_SAT, RGB_VAL, MACRO_5, RGB_TYP, MU_TOGG, KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+    DISABLE, KC_NO,   MU_TOGG, KC_NO,   SONG_1,  KC_NO,   KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_SLEP,
+    KC_CAPS, RGB_SAT, RGB_VAL, MACRO_5, RGB_TYP, KC_NO,   KC_NO,   KC_MUTE, KC_NO,   KC_NO,   KC_NO,   KC_NO,
     _______, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_VOLD, KC_VOLU, MACRO_6, MACRO_7, MACRO_8, MACRO_9, KC_NUM,
-    KC_NO,   KC_NO,   LO_SWCH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_BOOT, KC_NO,   KC_NO
+    KC_NO, LED_LEVEL, QK_RBT,  KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_BOOT, KC_NO,   KC_NO
   ),
 
   /* DISABLE
@@ -283,15 +283,15 @@ void adjust_colors(void) {
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
         // operation keys
-        if (i==0 || i==6 || i==8 || \
-            (i>=11 && i<=17) || \
-            i==29 || i==30 || i==35 || i==38 || i==44) {
+        if (i==0 || i==2 || i==8 || \
+            (i>=11 && i<=15) || \
+            i==25 || i==29 || i==30 || i==35 || i==38 || i==44) {
             HSV hsv = {247, layer_sat, layer_val};
             RGB rgb = hsv_to_rgb(hsv);
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
         // mute
-        if (i==18) {
+        if (i==19) {
             if (!mute) {
                 HSV hsv = {247, layer_sat, layer_val};
                 RGB rgb = hsv_to_rgb(hsv);
