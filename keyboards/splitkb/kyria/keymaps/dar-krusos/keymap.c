@@ -30,13 +30,8 @@ enum custom_keycodes {
   RGB_TYP
 };
 
-
-// Aliases for readability
-#define DVORAK   DF(_DVORAK)
-#define QWERTY   DF(_QWERTY)
-
-#define LOWER    MO(_LOWER)
-#define RAISE    MO(_RAISE)
+#define LOWER MO(_LOWER)
+#define RAISE MO(_RAISE)
 #define DISABLE TG(_DISABLE)
 
 // clang-format off
@@ -187,7 +182,7 @@ extern rgb_config_t rgb_matrix_config;
 
 static bool startup_state = 0;
 static bool mute = 0;
-static bool rgb_off = 0;
+static bool rgb_on = 1;
 static uint8_t layer_sat = 0;
 static uint8_t layer_val = 0;
 static uint32_t startup_timer = 0;
@@ -214,7 +209,7 @@ void eeconfig_init_user(void) { // Default config on EEPROM clear
 typedef struct _master_to_slave_t {
     bool startup_state :1;
     bool mute :1;
-    bool rgb_off :1;
+    bool rgb_on :1;
     uint8_t reactive_mode :3;
     uint8_t layer_sat :8;
     uint8_t layer_val :8;
@@ -232,7 +227,7 @@ void housekeeping_task_user(void) {
     if (is_keyboard_master()) {
         static uint32_t last_sync = 0;
         if (timer_elapsed32(last_sync) > 100) {
-            master_to_slave_t m2s = {startup_state, mute, rgb_off, user_config.reactive_mode, layer_sat, layer_val};
+            master_to_slave_t m2s = {startup_state, mute, rgb_on, user_config.reactive_mode, layer_sat, layer_val};
             if(transaction_rpc_send(SYNC_STATES, sizeof(master_to_slave_t), &m2s)) {
                 last_sync = timer_read32();
             } else {
@@ -246,9 +241,9 @@ void housekeeping_task_user(void) {
         if (sync_states.mute)
             mute = 1;
         else mute = 0;
-        if (sync_states.rgb_off)
-            rgb_off = 1;
-        else rgb_off = 0;
+        if (sync_states.rgb_on)
+            rgb_on = 1;
+        else rgb_on = 0;
         user_config.reactive_mode = sync_states.reactive_mode;
         layer_sat = sync_states.layer_sat;
         layer_val = sync_states.layer_val;
@@ -260,7 +255,7 @@ void keyboard_post_init_user(void) {
     user_config.raw = eeconfig_read_user();
     rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_STARTUP);
     transaction_register_rpc(SYNC_STATES, sync_states_slave_handler);
-    debug_enable=true;
+    // debug_enable=true;
 }
 
 // Custom functions
@@ -340,6 +335,11 @@ void set_mode_to_adjust(void) {
     }
 }
 
+void rgb_matrix_set_color_with_hsv(uint8_t index, uint8_t hue) {
+    rgb_t rgb = hsv_to_rgb((hsv_t){hue, layer_sat, layer_val});
+    rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
+}
+
 void startup(void) {
     set_mode_to_reactive();
     startup_state = 1;
@@ -347,7 +347,7 @@ void startup(void) {
 
     // Sync variables
     if (is_keyboard_master()) {
-        master_to_slave_t m2s = {startup_state, mute, rgb_off, user_config.reactive_mode, layer_sat, layer_val};
+        master_to_slave_t m2s = {startup_state, mute, rgb_on, user_config.reactive_mode, layer_sat, layer_val};
         if(!transaction_rpc_send(SYNC_STATES, sizeof(master_to_slave_t), &m2s)) {
             dprint("Slave sync failed!\n");
         }
@@ -358,9 +358,9 @@ void startup(void) {
         if (sync_states.mute)
             mute = 1;
         else mute = 0;
-        if (sync_states.rgb_off)
-            rgb_off = 1;
-        else rgb_off = 0;
+        if (sync_states.rgb_on)
+            rgb_on = 1;
+        else rgb_on = 0;
         user_config.reactive_mode = sync_states.reactive_mode;
         layer_sat = sync_states.layer_sat;
         layer_val = sync_states.layer_val;
@@ -371,7 +371,7 @@ void startup(void) {
 layer_state_t layer_state_set_user(layer_state_t state) {
     state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 
-    if (rgb_off == 0) {
+    if (rgb_on) {
         switch (get_highest_layer(state)) {
             case _LOWER:
             case _RAISE:
@@ -388,7 +388,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
                 set_mode_to_adjust();
                 break;
             default:
-                if (startup_state == 1 && rgb_off == 0)
+                if (startup_state == 1 && rgb_on)
                     set_mode_to_reactive();
                 break;
         }
@@ -397,38 +397,31 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return state;
 }
 
+// TODO: Move to layer_state_set_user
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (rgb_off == 0) {
+    if (rgb_on) {
         switch (get_highest_layer(layer_state)) {
             case _LOWER:
                 for (uint8_t i = led_min; i < led_max; i++) {
                     // operation keys
                     if (i==24 || i==27 || i==30) {
-                        HSV hsv = {247, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 247);
                     }
                     // numbers
                     if ((i>=13 && i<=17) || \
                         (i>=19 && i<=23)) {
-                        HSV hsv = {15, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 15);
                     }
                     // numpad operations
                     if (i==28 || i==37 || i==40 || i==44 || i==48 || i==49 || i==50 || i==54 || i==56 || i==60) {
-                        HSV hsv = {95, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 95);
                     }
                     // numpad numbers
                     if ((i>=38 && i<=39) || \
                         (i>=45 && i<=47) || \
                         (i>=51 && i<=53) || \
                         (i>=57 && i<=59)) {
-                        HSV hsv = {161, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 161);
                     }
                 }
                 break;
@@ -439,29 +432,21 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                         i==49 || \
                         (i>=51 && i<=54) || \
                         (i>=56 && i<=60)) {
-                        HSV hsv = {195, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 195);
                     }
                     // F1-12
                     if (i==9 || i==10 || \
                         (i>=13 && i<=17) || \
                         (i>=19 && i<=23)) {
-                        HSV hsv = {15, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 15);
                     }
                     // operation keys
                     if (i==6 || i==8 || i==24 || i==30 || i==37 || i==38 || i==40 || i==41 || i==44 || i==50) {
-                        HSV hsv = {247, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 247);
                     }
                     // macros
                     if (i>=45 && i<=48) {
-                        HSV hsv = {41, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 41);
                     }
                 }
                 break;
@@ -470,44 +455,30 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                     // operation keys
                     if ((i>=21 && i<=23) || \
                         i==30 || i==61) {
-                        HSV hsv = {247, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 247);
                     }
                     // macros
                     if (i>=45 && i<=48) {
-                        HSV hsv = {41, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 41);
                     }
                     // numpad operations
                     if (i==49) {
-                        HSV hsv = {95, layer_sat, layer_val};
-                        RGB rgb = hsv_to_rgb(hsv);
-                        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                        rgb_matrix_set_color_with_hsv(i, 95);
                     }
                     // OS mute
                     if (i==51) {
                         if (!mute) {
-                            HSV hsv = {247, layer_sat, layer_val};
-                            RGB rgb = hsv_to_rgb(hsv);
-                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                            rgb_matrix_set_color_with_hsv(i, 247);
                         } else {
-                            HSV hsv = {166, layer_sat, layer_val};
-                            RGB rgb = hsv_to_rgb(hsv);
-                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                            rgb_matrix_set_color_with_hsv(i, 166);
                         }
                     }
                     // Layout
                     if (i==58) {
                         if (layer_state_cmp(default_layer_state, _DVORAK)) {
-                            HSV hsv = {247, layer_sat, layer_val};
-                            RGB rgb = hsv_to_rgb(hsv);
-                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                            rgb_matrix_set_color_with_hsv(i, 247);
                         } else {
-                            HSV hsv = {175, layer_sat, layer_val};
-                            RGB rgb = hsv_to_rgb(hsv);
-                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                            rgb_matrix_set_color_with_hsv(i, 175);
                         }
                     }
                 }
@@ -518,23 +489,13 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                         // underglow
                         if ((i>=0 && i<=5) || \
                             (i>=31 && i<=36)) {
-                            HSV hsv = {251, layer_sat, layer_val};
-                            RGB rgb = hsv_to_rgb(hsv);
-                            rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+                            rgb_matrix_set_color_with_hsv(i, 251);
                         }
                     }
                 break;
         }
-    } else if (rgb_off == 1) {
-        switch (get_highest_layer(layer_state)) {
-            case _ADJUST:
-                HSV hsv = {247, layer_sat, layer_val*.5};
-                RGB rgb = hsv_to_rgb(hsv);
-                rgb_matrix_set_color(21, rgb.r, rgb.g, rgb.b);
-                break;
-            default:
-                break;
-        }
+    } else if (!rgb_on && get_highest_layer(layer_state) == _ADJUST) {
+        rgb_matrix_set_color_with_hsv(21, 247);
     }
     return false;
 }
@@ -582,8 +543,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
     case MACRO_5:
       if (record->event.pressed) {
-        rgb_off = !rgb_off;
-        if (rgb_off) rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
+        rgb_on = !rgb_on;
+        if (!rgb_on) rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_BLANK);
         else set_mode_to_adjust();
       }
       break;
